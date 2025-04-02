@@ -52,17 +52,24 @@ sequenceDiagram
     actor User
     participant Product
     participant Order
-    
-    User ->>+ Order: 주문 요청
-    alt 주문 생성
-        User ->>+ Product : 상품 재고 조회 (상품 수량 >= 구매 요청 수량)
-        Product ->>+ Order : 주문 생성
+
+    User ->>+ Product : 상품 재고 조회 (상품 수량 >= 구매 요청 수량)
+    activate Product
+    Product -->>- User : 재고 확인 결과
+    deactivate Product
+
+    alt 주문 가능
+        User ->>+ Order: 주문 요청
+        activate Order
+        Order ->> Product : 재고 차감
         Order -->>- User : 결제 대기
+        deactivate Order
     else 주문 실패
-        User ->>+ Product : 상품 재고 조회
-        Product -->>- User : 주문 실패 (상품 수량 부족)
+        Order -->> User : 주문 실패 (상품 수량 부족)
     end
 ```
+
+### 여기서부터 activate,  로직 검증 필요
 
 ## 결제
 ```mermaid
@@ -99,6 +106,7 @@ sequenceDiagram
 ## 쿠폰 발급 목록 조회
 ```mermaid
 sequenceDiagram
+%%     라이프스팬 막대
     actor User
     participant Coupon
 
@@ -108,6 +116,7 @@ sequenceDiagram
 
 ## 인기 판매 상품 조회
 ```mermaid
+%% product 조회말고 주문에서도 가져올 수 있지않나? 주문량을 통해?
 sequenceDiagram
     actor User
     participant Product
