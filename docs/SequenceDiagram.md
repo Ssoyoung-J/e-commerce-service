@@ -71,6 +71,7 @@ sequenceDiagram
     participant Order
     participant Coupon
     participant UserPoint
+    participant Platform
     
     User ->>+ UserPoint: 결제 요청
     alt 결제 성공 
@@ -78,11 +79,13 @@ sequenceDiagram
         Order ->>+ Coupon : 유효한 쿠폰 조회
         Coupon ->>+ Order: 쿠폰 적용
         Order ->>+ UserPoint: 포인트 차감
+        UserPoint ->>+ Platform: 결제 정보
     else 결제 성공 (유효한 쿠폰X)
         User ->>+ Order : 주문 정보 조회(결제 대기)
         Order ->>+ Coupon : 유효한 쿠폰 X
         Coupon -->>- Order: 쿠폰 적용 X
         Order -->>+ UserPoint: 포인트 차감
+        UserPoint ->>+ Platform: 결제 정보
     else 결제 실패 (결제 기한 만료) 
 %%    ex : 무통장 입금
         User ->>+ Order : 주문 정보 조회(결제 대기)
