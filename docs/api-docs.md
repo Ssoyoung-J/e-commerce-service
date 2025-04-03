@@ -1,21 +1,21 @@
 # API 명세 문서
 
 ## 목차
-- 잔액 조회 API (#잔액-조회-API)
-- 잔액 충전 API (#잔액-충전-API)
-- 상품 목록 조회 API (#상품-목록-조회-API)
-- 상품 단건 조회 API (#상품-단건-조회-API)
-- 주문 API (#주문-API)
-- 결제 API (#결제-API)
-- 쿠폰 발급 요청 API(#쿠폰-발급-요청-API)
-- 쿠폰 발급 목록 조회 API(#쿠폰-발급-목록-조회-API)
-- 인기 상품 조회 API(#인기-상품-조회-API)
+- [잔액 조회 API](#잔액-조회-api)
+- [잔액 충전 API](#잔액-충전-api)
+- [상품 목록 조회 API](#상품-목록-조회-api)
+- [상품 단건 조회 API](#상품-단건-조회-api)
+- [주문 API](#주문-api)
+- [결제 API](#결제-api)
+- [쿠폰 발급 요청 API](#쿠폰-발급-요청-api)
+- [쿠폰 발급 목록 조회 API](#쿠폰-목록-조회-api)
+- [인기 상품 조회 API](#인기-상품-조회-api)
 
 # 잔액 조회 API
 
 ## 개요
 - **Method** : `GET`
-- **Endpoint** : `/users/{user_id}/point`
+- **Endpoint** : `"/api/users/{user_id}/point`
 - **Description** : 특정 사용자의 현재 잔액을 조회하는 API
 
 ---
@@ -52,7 +52,7 @@
 
 ## 개요
 - **Method** : `POST`
-- **Endpoint** : `/users/{user_id}/point`
+- **Endpoint** : `/api/users/{user_id}/point`
 - **Description** : 특정 사용자의 잔액을 충전하는 API
 
 ---
@@ -96,7 +96,7 @@
 
 ## 개요
 - **Method** : `GET`
-- **Endpoint** : `/products`
+- **Endpoint** : `/api/products`
 - **Description** : 상품 목록을 조회하는 API
 
 ---
@@ -161,7 +161,7 @@
 
 ## 개요
 - **Method** : `GET`
-- **Endpoint** : `/products/{product_id}`
+- **Endpoint** : `/api/products/{product_id}`
 - **Description** : 상품을 단건 조회하는 API
 
 ---
@@ -263,7 +263,7 @@
 
 ## 개요
 - **Method** : `POST`
-- **Endpoint** : `/order/payment`
+- **Endpoint** : `/api/order/payment`
 - **Description** : 상품을 결제하는 API
 
 ---
@@ -302,7 +302,7 @@
 
 ## 개요
 - **Method** : `POST`
-- **Endpoint** : `/coupons/{user_id}`
+- **Endpoint** : `/api/coupons/{user_id}`
 - **Description** : 쿠폰 발급 요청 API
 
 ---
@@ -340,7 +340,7 @@
 
 ## 개요
 - **Method** : `GET`
-- **Endpoint** : `/coupons/{user_id}`
+- **Endpoint** : `/api/coupons/{user_id}`
 - **Description** : 쿠폰 목록 조회 API
 
 ---
@@ -384,7 +384,7 @@
 
 ## 개요
 - **Method** : `GET`
-- **Endpoint** : `/products/popular`
+- **Endpoint** : `/api/products/popular`
 - **Description** : 인기 상품 조회 API
 
 ---
