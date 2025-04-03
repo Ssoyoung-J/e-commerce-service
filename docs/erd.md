@@ -42,6 +42,7 @@ erDiagram
         user_coupon_id bigint PK "사용자 보유 쿠폰 고유 ID"
         user_id bigint FK "사용자 고유 ID"
         coupon_id bigint FK "쿠폰 고유 ID"
+        coupon_name varchar "쿠폰명"
         coupon_status varchar "쿠폰 상태"
         used_at datetime "사용 일시"
         expriation_at datetime "만료 일시"
