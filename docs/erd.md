@@ -11,7 +11,7 @@ erDiagram
     order ||--|{ order_item: "1:N"
     order ||--o| user_coupon : "1:0..1"
 
-    order_item ||--|| product_detail : "1:1"
+    order_item ||--|| product : "1:1"
     product ||--|{ product_detail : "1:N"
 
     user {
@@ -82,7 +82,6 @@ erDiagram
     order_item {
         item_id bigint PK "주문 상품 고유 ID"
         order_id bigint FK "주문 고유 ID"
-        product_detail_id bigint FK "상품 상세 ID"
         product_id bigint FK "상품 고유 ID"
         product_price bigint "상품 금액"
         product_quantity bigint "상품 수량"
@@ -93,7 +92,7 @@ erDiagram
 
     product_detail {
         product_detail_id bigint PK "상품 상세 ID"
-%%        product_id bigint FK "상품 고유 ID"
+        product_id bigint FK "상품 고유 ID"
         option varchar "상품 옵션"
         product_price bigint "상품 금액"
         stock_quantity bigint "상품 재고 수량"
