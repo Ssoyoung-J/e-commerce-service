@@ -87,15 +87,13 @@ sequenceDiagram
         Order ->> UserPoint: 결제 요청
         activate UserPoint
         UserPoint -->>- Order: 결제 성공
-        Order ->>+ Platform: 결제 정보
-        deactivate Platform
+        Order --)+ Platform: 결제 정보
     else 결제 성공 (유효한 쿠폰X)
         activate Coupon
         Coupon -->>- Order: 쿠폰 적용 X
         Order ->>+ UserPoint: 결제 요청
         UserPoint -->>- Order : 결제 성공
-        Order ->>+ Platform: 결제 정보
-        deactivate Platform
+        Order --)+ Platform: 결제 정보
     else 결제 실패 (결제 기한 만료)
     %% ex : 무통장 입금
         activate Coupon
