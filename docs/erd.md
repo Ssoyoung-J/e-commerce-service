@@ -26,7 +26,7 @@ erDiagram
     user_point {
         point_id bigint PK "사용자 포인트 고유 ID"
         user_id bigint FK "사용자 고유 ID"
-        point bigint "포인트"
+        balance bigint "포인트"
         created_at datetime "생성 일시"
     }
 
