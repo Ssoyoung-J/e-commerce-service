@@ -14,10 +14,10 @@ public class PointController {
     @Autowired
     PointService pointService;
 
-    @PostMapping(value = "/{userId}/point")
-    public ResponseEntity<PointResponse> charge(@PathVariable("userId") Long userId, @RequestBody PointRequest.Charge req) {
-        PointCommand command = new PointCommand(userId, req.pointAmount);
-        return ResponseEntity.ok(pointService.chargePoint(command));
-    }
+//    @PostMapping(value = "/{userId}/point")
+//    public ResponseEntity<PointResponse> charge(@PathVariable("userId") Long userId, @RequestBody PointRequest.Charge req) {
+//        PointCommand command = new PointCommand(userId, req.pointAmount);
+//        return ResponseEntity.ok(pointService.chargePoint(command));
+//    }
 
 }

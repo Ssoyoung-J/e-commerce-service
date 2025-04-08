@@ -1,9 +1,12 @@
 package kr.hhplus.be.server.domain.point;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Point {
 
@@ -27,20 +30,20 @@ public class Point {
     @Column(name = "balance", nullable = false)
     private Long balance = 0L;
 
-    protected Point() {
 
-    }
-
-    public Point(Long pointId, Long userId) {
+    @Builder
+    public Point(Long pointId, Long userId, Long balance) {
         this.pointId = pointId;
         this.userId = userId;
-        this.balance = 0L;
+        this.balance = balance;
     }
 
-    public void charge(Long pointAmount) {
+    // 포인트 충전
+    public Long charge(Long pointAmount) {
         if(pointAmount < 0) {
             throw new IllegalArgumentException("충전 포인트는 0보다 작을 수 없습니다.");
         }
-        this.balance += pointAmount;
+        return this.balance += pointAmount;
     }
+
 }
