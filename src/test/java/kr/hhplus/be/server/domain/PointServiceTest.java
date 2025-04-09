@@ -1,9 +1,7 @@
 package kr.hhplus.be.server.domain;
 
-import kr.hhplus.be.server.domain.point.Point;
-import kr.hhplus.be.server.domain.point.PointHistory;
-import kr.hhplus.be.server.domain.point.PointService;
-import kr.hhplus.be.server.domain.point.PointTransactionType;
+import kr.hhplus.be.server.domain.point.*;
+import kr.hhplus.be.server.infrastructure.point.PointHistoryRepository;
 import kr.hhplus.be.server.infrastructure.point.PointJpaRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +28,9 @@ public class PointServiceTest {
     @Mock
     private PointJpaRepository pointRepository;
 
+    @Mock
+    private PointHistoryRepository pointHistoryRepository;
+
     @InjectMocks
     private PointService service;
 
@@ -44,14 +45,19 @@ public class PointServiceTest {
             long balance = 10L;
             long pointAmount = 20L;
             Point userPoint = new Point(pointId, userId, balance);
+
+            PointCommand command = new PointCommand();
+            command.setUserId(userId);
+            command.setPointAmount(pointAmount);
+
             when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
 
             //  when
-            service.chargePoint(userId, pointAmount);
+            service.chargePoint(command);
 
             //  then
             assertThat(userPoint.getBalance()).isEqualTo(pointAmount+balance);
-            verify(pointRepository, times(1)).saveHistory(
+            verify(pointHistoryRepository, times(1)).save(
                     eq(userId),
                     eq(PointTransactionType.CHARGE),
                     eq(pointAmount),
@@ -67,16 +73,80 @@ public class PointServiceTest {
             long userId = 1L;
             long pointId = 1L;
             long balance = 10L;
+            long pointAmount = -20L;
             Point userPoint = new Point(pointId, userId, balance);
+
+            PointCommand command = new PointCommand();
+            command.setUserId(userId);
+            command.setPointAmount(pointAmount);
+
             when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
 
             //  when
             IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                service.chargePoint(userId, -1L);
+                service.chargePoint(command);
             });
 
             //  then
             assertEquals("충전 포인트는 0보다 작을 수 없습니다.", exception.getMessage());
+
+        }
+    }
+
+    @Nested
+    class pointUseTest {
+        @DisplayName("보유 포인트가 사용 포인트보다 클 경우 - 포인트 충전 성공")
+        @Test
+        public void shouldUseSuccessfully_WhenUserHasExactPoints() {
+            //  given
+            long userId = 1L;
+            long pointId = 1L;
+            long balance = 1000L;
+            long pointAmount = 20L;
+            Point userPoint = new Point(pointId, userId, balance);
+
+            PointCommand command = new PointCommand();
+            command.setUserId(userId);
+            command.setPointAmount(pointAmount);
+
+            when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
+
+            //  when
+            service.usePoint(command);
+
+            //  then
+            assertThat(userPoint.getBalance()).isEqualTo(balance-pointAmount);
+            verify(pointHistoryRepository, times(1)).save(
+                    eq(userId),
+                    eq(PointTransactionType.USE),
+                    eq(pointAmount),
+                    any(LocalDateTime.class) // LocalDateTime은 일치하기 어려우니 any로 처리
+            );
+
+        }
+
+        @DisplayName("사용 포인트가 보유 포인트보다 클 경우 - 포인트 사용 실패")
+        @Test
+        public void shouldUseFail_WhenUserHasInSufficientPoints(){
+            //  given
+            long userId = 1L;
+            long pointId = 1L;
+            long balance = 10L;
+            long pointAmount = 100L;
+            Point userPoint = new Point(pointId, userId, balance);
+            PointCommand command = new PointCommand();
+            command.setUserId(userId);
+            command.setPointAmount(pointAmount);
+
+            when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
+
+            //  when
+            IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+                service.usePoint(command);
+            });
+
+            //  then
+            assertEquals("사용 포인트는 보유 포인트보다 클 수 없습니다.", exception.getMessage());
 
         }
     }

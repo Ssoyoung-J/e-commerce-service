@@ -31,6 +31,8 @@ public class Point {
     private Long balance = 0L;
 
 
+
+
     @Builder
     public Point(Long pointId, Long userId, Long balance) {
         this.pointId = pointId;
@@ -44,6 +46,14 @@ public class Point {
             throw new IllegalArgumentException("충전 포인트는 0보다 작을 수 없습니다.");
         }
         return this.balance += pointAmount;
+    }
+
+    // 포인트 사용
+    public Long use(Long pointAmount) {
+        if (balance < pointAmount) {
+            throw new IllegalArgumentException("사용 포인트는 보유 포인트보다 클 수 없습니다.");
+        }
+        return this.balance -= pointAmount;
     }
 
 }
