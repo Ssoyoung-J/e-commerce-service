@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.coupon.Coupon;
 import lombok.Value;
 
 import java.util.List;
@@ -11,4 +12,8 @@ public class OrderCreateCommand {
 
     // 주문 상품
     List<OrderItem> orderItemList;
+    
+    // 쿠폰
+    Coupon coupon;
+
 }

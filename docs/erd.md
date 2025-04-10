@@ -47,6 +47,7 @@ erDiagram
         used_at datetime "사용 일시"
         expriation_at datetime "만료 일시"
         created_at datetime "생성 일시"
+        updated_at datetime "수정 일시"
     }
 
     coupon {
