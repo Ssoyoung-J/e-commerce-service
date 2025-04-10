@@ -46,9 +46,8 @@ public class PointServiceTest {
             long pointAmount = 20L;
             Point userPoint = new Point(pointId, userId, balance);
 
-            PointCommand command = new PointCommand();
-            command.setUserId(userId);
-            command.setPointAmount(pointAmount);
+            // 생성자를 통한 불변 객체 생성
+            PointCommand command = new PointCommand(userId, pointAmount);
 
             when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
 
@@ -76,9 +75,7 @@ public class PointServiceTest {
             long pointAmount = -20L;
             Point userPoint = new Point(pointId, userId, balance);
 
-            PointCommand command = new PointCommand();
-            command.setUserId(userId);
-            command.setPointAmount(pointAmount);
+            PointCommand command = new PointCommand(userId, pointAmount);
 
             when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
 
@@ -105,9 +102,7 @@ public class PointServiceTest {
             long pointAmount = 20L;
             Point userPoint = new Point(pointId, userId, balance);
 
-            PointCommand command = new PointCommand();
-            command.setUserId(userId);
-            command.setPointAmount(pointAmount);
+            PointCommand command = new PointCommand(userId, pointAmount);
 
             when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
 
@@ -134,9 +129,7 @@ public class PointServiceTest {
             long balance = 10L;
             long pointAmount = 100L;
             Point userPoint = new Point(pointId, userId, balance);
-            PointCommand command = new PointCommand();
-            command.setUserId(userId);
-            command.setPointAmount(pointAmount);
+            PointCommand command = new PointCommand(userId, pointAmount);
 
             when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(userPoint));
 

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @OpenAPIDefinition(
 		info = @Info(title = "E-Commerce Service", version = "1.0", description = "E-Commerce Service API 명세"),
@@ -12,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				@Server(url = "http://localhost:8080", description = "로컬"),
 		}
 )
-
+@EnableJpaAuditing
 @SpringBootApplication
 public class ServerApplication {
 
