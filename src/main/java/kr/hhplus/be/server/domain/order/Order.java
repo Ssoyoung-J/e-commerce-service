@@ -31,7 +31,7 @@ public class Order extends BaseEntity {
      * 주문 상태
      * */
     @Column(name = "orderStatus", nullable = false)
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
     /**
      * 주문 일시
@@ -58,7 +58,7 @@ public class Order extends BaseEntity {
     private Long finalPrice;
 
     @Builder
-    public Order(Long orderId, Long userId, String orderStatus, LocalDateTime orderedAt, Long totalAmount, Long discountAmount, Long finalPrice) {
+    public Order(Long orderId, Long userId, OrderStatus orderStatus, LocalDateTime orderedAt, Long totalAmount, Long discountAmount, Long finalPrice) {
         this.orderId = orderId;
         this.userId = userId;
         this.orderStatus = orderStatus;
@@ -68,10 +68,17 @@ public class Order extends BaseEntity {
         this.finalPrice = finalPrice;
     }
 
-    // 주문 성공 -> orderedStatus = 주문 성공
-//    public String order(Long userId,)
 
-    // 주문 실패 -> orderedStatus = 주문 실패
+    // 주문 정보 생성 - createOrder
+    public static Order create(OrderCreateCommand command) {
+        return new Order (
+                command.getUserId(),
+                command.getOrderItemList(),
+                OrderStatus.CREATED
+        );
+    }
+    
+    // 주문 상태 변경 - updateOrderStatus
 
 
 }
