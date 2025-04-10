@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.BaseEntity;
+import kr.hhplus.be.server.domain.product.Product;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,13 @@ public class OrderItem extends BaseEntity {
     
 
     /**
+     * 상품과 단방향 연관관계(N:1)
+     * */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    /**
      * 상품 고유 ID
      * */
     @Column(name = "productId", nullable = false)
@@ -47,7 +55,16 @@ public class OrderItem extends BaseEntity {
 
 
     @Builder
-    public OrderItem(Long orderId, Long productId, Long productPrice, Long productQuantity) {
+    public OrderItem(Order order, Long productId, Long productPrice, Long productQuantity) {
+        if(productPrice == null || productPrice <= 0) {
+            throw new IllegalArgumentException("상품 가격은 0보다 커야 합니다.");
+        }
+
+        if(productQuantity == null || productQuantity <= 0) {
+            throw new IllegalArgumentException("상품 수량은 0보다 커야 합니다.");
+        }
+
+        this.order = order;
         this.productId = productId;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;

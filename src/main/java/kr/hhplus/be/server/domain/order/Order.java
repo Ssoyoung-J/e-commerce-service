@@ -97,9 +97,6 @@ public class Order extends BaseEntity {
         }
     }
 
-
-
-
     // 주문 정보 생성 - createOrder
     public static Order create(OrderCreateCommand command) {
         List<OrderItem> items = command.getOrderItemList();
