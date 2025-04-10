@@ -98,23 +98,16 @@ public class Order extends BaseEntity {
     }
 
     // 주문 정보 생성 - createOrder
-    public static Order create(OrderCreateCommand command) {
-        List<OrderItem> items = command.getOrderItemList();
-
-        // 주문 상품 총 금액
+    public static Order create(Long userId, List<OrderItem> items, Coupon coupon) {
         long totalAmount = items.stream()
                 .mapToLong(OrderItem::calculateAmount)
                 .sum();
 
-        // 쿠폰 적용에 따른 할인 금액
-        long discountAmount = command.getCoupon().calculateDiscountAmount();
-
-       /*  금액 할인 적용 정책을 사용
-         총 금액 - 할인 금액 */
-        long finalPrice = totalAmount - discountAmount;
+        long discountAmount = coupon != null ? coupon.calculateDiscountAmount() : 0L;
+        long finalPrice = Math.max(totalAmount - discountAmount, 0L);
 
         return Order.builder()
-                .userId(command.getUserId())
+                .userId(userId)
                 .orderStatus(OrderStatus.CREATED)
                 .orderItemList(items)
                 .orderedAt(LocalDateTime.now())

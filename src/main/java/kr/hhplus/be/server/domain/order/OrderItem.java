@@ -70,6 +70,13 @@ public class OrderItem extends BaseEntity {
         this.productQuantity = productQuantity;
     }
 
+    public static OrderItem of(Long productId, Long productQuantity) {
+        return OrderItem.builder()
+                .productId(productId)
+                .productQuantity(productQuantity)
+                .build();
+    }
+
     // Order와 OrderItem간의 연관관계 생성
     public void assignOrder(Order order) {
         this.order = order;

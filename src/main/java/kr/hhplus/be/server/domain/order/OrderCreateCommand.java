@@ -11,9 +11,9 @@ public class OrderCreateCommand {
     Long userId;
 
     // 주문 상품
-    List<OrderItem> orderItemList;
+    List<OrderItemCommand> orderItems;
     
     // 쿠폰
-    Coupon coupon;
+    Long couponId;
 
 }
