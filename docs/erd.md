@@ -11,7 +11,7 @@ erDiagram
     order ||--|{ order_item: "1:N"
     order ||--o| user_coupon : "1:0..1"
 
-    order_item ||--|| product : "1:1"
+    order_item |{--|| product : "N:1"
     product ||--|{ product_detail : "1:N"
 
     user {
@@ -26,7 +26,7 @@ erDiagram
     user_point {
         point_id bigint PK "사용자 포인트 고유 ID"
         user_id bigint FK "사용자 고유 ID"
-        point bigint "포인트"
+        balance bigint "포인트"
         created_at datetime "생성 일시"
     }
 
@@ -47,6 +47,7 @@ erDiagram
         used_at datetime "사용 일시"
         expriation_at datetime "만료 일시"
         created_at datetime "생성 일시"
+        updated_at datetime "수정 일시"
     }
 
     coupon {
@@ -93,7 +94,7 @@ erDiagram
     product_detail {
         product_detail_id bigint PK "상품 상세 ID"
         product_id bigint FK "상품 고유 ID"
-        option varchar "상품 옵션"
+        option_name varchar "상품 옵션 이름"
         product_price bigint "상품 금액"
         stock_quantity bigint "상품 재고 수량"
         created_at datetime "생성 일시"
