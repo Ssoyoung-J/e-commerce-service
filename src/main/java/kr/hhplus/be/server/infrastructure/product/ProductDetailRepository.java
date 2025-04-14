@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
 
     // 단일 ProductDetail 조회
-    Optional<ProductDetail> findById(Long productId);
+    Optional<ProductDetail> findProductDetailById(Long id);
 
     // 전체 ProductDetail 조회
-    List<ProductDetail> findByProduct_ProductId(Long productId);
+//    List<ProductDetail> getProductDetails(Long id);
 }

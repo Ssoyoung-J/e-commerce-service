@@ -32,7 +32,7 @@ public class OrderItem extends BaseEntity {
      * 상품과 단방향 연관관계(N:1)
      * */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+//    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     /**
@@ -70,10 +70,12 @@ public class OrderItem extends BaseEntity {
         this.productQuantity = productQuantity;
     }
 
-    public static OrderItem of(Long productId, Long productQuantity) {
+    public static OrderItem of(Long productId, Long productPrice,Long productQuantity) {
         return OrderItem.builder()
+//                .order(order)
                 .productId(productId)
                 .productQuantity(productQuantity)
+                .productPrice(productPrice)
                 .build();
     }
 
@@ -83,6 +85,7 @@ public class OrderItem extends BaseEntity {
     }
 
     // 주문 상품 총 금액 계산
+    // 도메인 객체 끼리의 행위에서 비즈니스 로직으로 사용
     public Long calculateAmount() {
         return productQuantity * productPrice;
     }

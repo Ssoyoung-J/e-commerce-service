@@ -16,7 +16,8 @@ public class ProductDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "productDetailId", nullable = false)
-    private Long productDetailId;
+    private Long id;
+//    private Long productDetailId;
 
 
     @Column(name = "optionName", nullable = false)

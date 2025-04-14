@@ -8,9 +8,10 @@ import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class OrderFacade {
 
@@ -21,8 +22,9 @@ public class OrderFacade {
 
     /**
      *
-     * 주문부터 결제까지 하나의 트랜잭션으로 처리
+     * 주문부터 결제까지 하나의 트랜잭션으로 처리 ?  고민 필요
      *
      * */
+
 
 }

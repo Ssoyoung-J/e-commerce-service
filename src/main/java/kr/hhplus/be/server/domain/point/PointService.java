@@ -25,9 +25,9 @@ public class PointService {
         // 포인트 충전
         Long balance = point.charge(command.getPointAmount());
         // 충전한 사용자 포인트 저장
-        point = pointRepository.save(command.getUserId(), balance);
+//        point = pointRepository.save(command.getUserId(), balance);
         // 사용자 포인트 충전 이력 저장
-        pointHistoryRepository.save(command.getUserId(), PointTransactionType.CHARGE, command.getPointAmount(), LocalDateTime.now());
+//        pointHistoryRepository.save(command.getUserId(), PointTransactionType.CHARGE, command.getPointAmount(), LocalDateTime.now());
 
         return point;
     }
@@ -40,9 +40,9 @@ public class PointService {
         // 포인트 사용
         Long balance = point.use(command.getPointAmount());
         // 포인트 사용 후 잔액 저장
-        point = pointRepository.save(command.getUserId(), balance);
+//        point = pointRepository.save(command.getUserId(), balance);
         // 사용자 포인트 사용 이력 저장
-        pointHistoryRepository.save(command.getUserId(), PointTransactionType.USE, command.getPointAmount(),  LocalDateTime.now());
+//        pointHistoryRepository.save(command.getUserId(), PointTransactionType.USE, command.getPointAmount(),  LocalDateTime.now());
 
         return point;
     }

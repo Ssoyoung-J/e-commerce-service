@@ -131,7 +131,7 @@ classDiagram
         + Long stockQuantity
         + DateTime createdAt
         + DateTime updatedAt
-        + createProduct()
+        + createProductDetail()
         + getProductDetail()
         + updateProductDetailInfo()
     }

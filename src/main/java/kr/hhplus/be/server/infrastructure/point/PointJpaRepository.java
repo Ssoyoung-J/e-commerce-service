@@ -11,5 +11,5 @@ public interface PointJpaRepository extends JpaRepository<Point, Long> {
     Optional<Point> findByUserId(Long userId);
 
     // 사용자 포인트 저장
-    Point save(Long userId, Long balance);
+//    Point save(Long userId, Long balance);
 }

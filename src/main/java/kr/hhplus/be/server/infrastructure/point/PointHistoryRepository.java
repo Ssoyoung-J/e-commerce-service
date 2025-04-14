@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
 
-    PointHistory save(Long userId, PointTransactionType transactionType, Long pointAmount, LocalDateTime createdAt) ;
+//    PointHistory save(Long userId, PointTransactionType transactionType, Long pointAmount, LocalDateTime createdAt) ;
 }

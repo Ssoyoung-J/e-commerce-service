@@ -124,4 +124,14 @@ public class Order extends BaseEntity {
         this.orderStatus = newOrderStatus;
     }
 
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    // Order Entity에서 OrderItem Entity의 메소드를 호출하는 형태
+    public Long calculateTotalAmount() {
+        return orderItemList.stream()
+                .mapToLong(OrderItem::calculateAmount)
+                .sum();
+    }
 }

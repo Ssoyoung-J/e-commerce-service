@@ -38,6 +38,6 @@ public class Product extends BaseEntity {
                 detail.assignProduct(this);
             }
         }
-
     }
+
 }
