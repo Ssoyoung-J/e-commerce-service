@@ -30,6 +30,12 @@ public class Point {
     @Column(name = "balance", nullable = false)
     private Long balance = 0L;
 
+    /**
+     * 포인트
+     * */
+    @Column(name ="pointAmount", nullable = false)
+    private Long pointAmount;
+
 
 
 
@@ -40,9 +46,16 @@ public class Point {
         this.balance = balance;
     }
 
+    public static Point create(Long userId, Long balance) {
+        return Point.builder()
+                .userId(userId)
+                .balance(balance)
+                .build();
+    }
+
     // 포인트 충전
     public Long charge(Long pointAmount) {
-        if(pointAmount < 0) {
+        if(pointAmount <= 0) {
             throw new IllegalArgumentException("충전 포인트는 0보다 작을 수 없습니다.");
         }
         return this.balance += pointAmount;
