@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.product;
 
-import kr.hhplus.be.server.infrastructure.product.ProductDetailRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
