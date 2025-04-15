@@ -1,6 +1,5 @@
-package kr.hhplus.be.server.infrastructure;
+package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

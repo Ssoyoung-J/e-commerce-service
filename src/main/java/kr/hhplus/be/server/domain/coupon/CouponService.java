@@ -1,10 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.infrastructure.CouponJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
