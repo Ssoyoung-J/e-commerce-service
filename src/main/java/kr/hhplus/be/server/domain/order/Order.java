@@ -76,10 +76,10 @@ public class Order extends BaseEntity {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Payment payment;
 
-    public void assignPayment(Payment payment) {
-        this.payment = payment;
-        payment.assignOrder(this);
-    }
+//    public void assignPayment(Payment payment) {
+//        this.payment = payment;
+//        payment.assignOrder(this);
+//    }
 
     @Builder
     public Order(Long userId, OrderStatus orderStatus, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount, Long finalPrice) {
