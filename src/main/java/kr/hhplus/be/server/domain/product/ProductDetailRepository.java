@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ProductDetailRepository{
 
     // 단일 ProductDetail 조회
-    Optional<ProductDetail> findById(Long id);
+    ProductDetail findById(Long productId);
 
     // 전체 ProductDetail 조회
 //    List<ProductDetail> getProductDetails(Long id);
