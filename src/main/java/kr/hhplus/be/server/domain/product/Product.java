@@ -25,19 +25,20 @@ public class Product extends BaseEntity {
     @Column(name = "productName", nullable = false)
     private String productName;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductDetail> details = new ArrayList<>();
 
     @Builder
     public Product(String brand, String productName, List<ProductDetail> details) {
         this.brand = brand;
         this.productName = productName;
-        if(details != null) {
-            this.details = details;
-            for(ProductDetail detail : details) {
-                detail.assignProduct(this);
-            }
-        }
+    }
+
+    public static Product create(String brand, String productName) {
+        return Product.builder()
+                .brand(brand)
+                .productName(productName)
+                .build();
     }
 
 }

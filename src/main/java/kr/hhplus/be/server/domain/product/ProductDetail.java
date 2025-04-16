@@ -16,8 +16,7 @@ public class ProductDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "productDetailId", nullable = false)
-    private Long id;
-//    private Long productDetailId;
+    private Long productDetailId;
 
 
     @Column(name = "optionName", nullable = false)
@@ -34,16 +33,16 @@ public class ProductDetail extends BaseEntity {
     private Product product;
 
     @Builder
-    public ProductDetail(String optionName, Long productPrice, Long stockQuantity, Product product) {
+    public ProductDetail(String optionName, Long productPrice, Long stockQuantity) {
         this.optionName = optionName;
         this.productPrice = productPrice;
         this.stockQuantity = stockQuantity;
-        this.assignProduct(product);
+//        this.assignProduct(product);
     }
 
-    public void assignProduct(Product product) {
-        this.product = product;
-    }
+//    public void assignProduct(Product product) {
+//        this.product = product;
+//    }
 
     // 재고 확인
     public boolean hasSufficientStock(Long quantity) {
