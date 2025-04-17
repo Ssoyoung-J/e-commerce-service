@@ -5,6 +5,8 @@ import kr.hhplus.be.server.domain.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepository {
@@ -20,5 +22,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product findById(Long productId) {
         return productJpaRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return productJpaRepository.findAll();
     }
 }

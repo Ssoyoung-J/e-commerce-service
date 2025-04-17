@@ -16,16 +16,12 @@ public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "productId", nullable = false)
     private Long productId;
 
-    @Column(name = "brand", nullable = false)
     private String brand;
 
-    @Column(name = "productName", nullable = false)
     private String productName;
 
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductDetail> details = new ArrayList<>();
 
     @Builder

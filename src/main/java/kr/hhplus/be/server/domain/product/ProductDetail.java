@@ -15,34 +15,24 @@ public class ProductDetail extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "productDetailId", nullable = false)
     private Long productDetailId;
 
-
-    @Column(name = "optionName", nullable = false)
     private String optionName;
 
-    @Column(name = "productPrice", nullable = false)
     private Long productPrice;
 
-    @Column(name = "stockQuantity", nullable = false)
     private Long stockQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="product_id", nullable = false)
-    private Product product;
+    private Long productId;
 
     @Builder
-    public ProductDetail(String optionName, Long productPrice, Long stockQuantity) {
+    public ProductDetail(Long productDetailId, String  optionName, Long productPrice, Long stockQuantity) {
+        this.productDetailId = productDetailId;
         this.optionName = optionName;
         this.productPrice = productPrice;
         this.stockQuantity = stockQuantity;
-//        this.assignProduct(product);
     }
 
-//    public void assignProduct(Product product) {
-//        this.product = product;
-//    }
 
     // 재고 확인
     public boolean hasSufficientStock(Long quantity) {
