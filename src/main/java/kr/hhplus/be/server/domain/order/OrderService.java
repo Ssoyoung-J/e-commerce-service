@@ -15,17 +15,16 @@ public class OrderService {
     private final CouponService couponService;
     private final ExternalPlatform externalPlatform;
 
-    public Order createOrder(OrderCreateCommand command) {
+    public OrderInfo.Order createOrder(OrderCommand.Order command) {
         List<OrderItem> orderItems = command.getOrderItems().stream()
-                .map(item -> OrderItem.of(item.getProductId(), item.getProductPrice(), item.getProductQuantity()))
-                .toList();
-        Coupon coupon = couponService.getCoupon(command.getCouponId());
+                .map(this::createOrderItem).toList();
+        Coupon coupon = couponService.getCoupon(command.getUserCouponId());
 
         Order order = Order.create(command.getUserId(), orderItems, coupon);
 
         orderRepository.save(order);
 
-        return order;
+        return OrderInfo.Order.of(order.getOrderId(), order.getUserId(), order.getOrderStatus(), order.getTotalAmount(), order.getDiscountAmount(), order.getFinalPrice());
     }
 
     // 주문 결제 완료
@@ -41,5 +40,14 @@ public class OrderService {
         order.updateOrderStatus(OrderStatus.CANCELED);
     }
 
+    private OrderItem createOrderItem(OrderCommand.OrderItem orderItem) {
+        return OrderItem.of(
+                orderItem.getProductId(),
+                orderItem.getProductQuantity(),
+                orderItem.getProductPrice()
+        );
+    }
 
 }
+
+

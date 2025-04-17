@@ -72,7 +72,6 @@ public class OrderItem extends BaseEntity {
 
     public static OrderItem of(Long productId, Long productPrice,Long productQuantity) {
         return OrderItem.builder()
-//                .order(order)
                 .productId(productId)
                 .productQuantity(productQuantity)
                 .productPrice(productPrice)
