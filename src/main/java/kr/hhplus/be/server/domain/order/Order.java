@@ -24,7 +24,7 @@ public class Order extends BaseEntity {
      * */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orderId", nullable = false)
+    @Column(name = "order_id", nullable = false)
     private Long orderId;
 
     /**
@@ -32,6 +32,12 @@ public class Order extends BaseEntity {
      * */
     @Column(name = "userId", nullable = false)
     private Long userId;
+
+
+    /**
+     * 사용자 쿠폰 고유 ID
+     * */
+    private Long userCouponId;
 
     /**
      * 주문 상태
@@ -70,16 +76,16 @@ public class Order extends BaseEntity {
     @Column(name = "finalPrice", nullable = false)
     private Long finalPrice;
 
-    /**
-     * 결제
-     * */
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Payment payment;
+//    /**
+//     * 결제
+//     * */
+//    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    private Payment payment;
 
-    public void assignPayment(Payment payment) {
-        this.payment = payment;
-        payment.assignOrder(this);
-    }
+//    public void assignPayment(Payment payment) {
+//        this.payment = payment;
+//        payment.assignOrder(this);
+//    }
 
     @Builder
     public Order(Long userId, OrderStatus orderStatus, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount, Long finalPrice) {
@@ -92,13 +98,13 @@ public class Order extends BaseEntity {
         this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
 
         // 연관관계 설정
-        for(OrderItem item : this.orderItemList) {
-            item.assignOrder(this);
-        }
+//        for(OrderItem item : this.orderItemList) {
+//            item.assignOrder(this);
+//        }
     }
 
     // 주문 정보 생성 - createOrder
-    public static Order create(Long userId, List<OrderItem> items, Coupon coupon) {
+    public static Order create(Long userId ,List<OrderItem> items, Coupon coupon) {
         long totalAmount = items.stream()
                 .mapToLong(OrderItem::calculateAmount)
                 .sum();
@@ -124,4 +130,14 @@ public class Order extends BaseEntity {
         this.orderStatus = newOrderStatus;
     }
 
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    // Order Entity에서 OrderItem Entity의 메소드를 호출하는 형태
+    public Long calculateTotalAmount() {
+        return orderItemList.stream()
+                .mapToLong(OrderItem::calculateAmount)
+                .sum();
+    }
 }

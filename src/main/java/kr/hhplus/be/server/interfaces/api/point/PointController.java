@@ -16,13 +16,13 @@ public class PointController {
     @Autowired
     PointService pointService;
 
-    @PostMapping(value = "/{userId}/point")
-    public ResponseEntity<PointResponse> charge(@PathVariable("userId") Long userId, @RequestBody PointCommand command) {
-        Point point = pointService.chargePoint(command);
-        PointResponse response = new PointResponse();
-        response.setUserId(point.getUserId());
-        response.setBalance(point.getBalance());
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping(value = "/{userId}/point")
+//    public ResponseEntity<PointResponse> charge(@PathVariable("userId") Long userId, @RequestBody PointCommand command) {
+//        Point point = pointService.chargePoint(command);
+//        PointResponse response = new PointResponse();
+//        response.setUserId(point.getUserId());
+//        response.setBalance(point.getBalance());
+//        return ResponseEntity.ok(response);
+//    }
 
 }
