@@ -20,6 +20,7 @@ public class PointRepositoryImpl implements PointRepository {
         return pointJpaRepository.findById(userId);
     }
 
+    // 사용자 포인트 저장
     @Override
     public Point save(Point balance) {
         return pointJpaRepository.save(balance);
