@@ -23,7 +23,9 @@ public class ProductDetail extends BaseEntity {
 
     private Long stockQuantity;
 
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Builder
     public ProductDetail(Long productDetailId, String  optionName, Long productPrice, Long stockQuantity) {
@@ -33,6 +35,9 @@ public class ProductDetail extends BaseEntity {
         this.stockQuantity = stockQuantity;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     // 재고 확인
     public boolean hasSufficientStock(Long quantity) {

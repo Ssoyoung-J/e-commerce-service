@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 @Service
@@ -36,16 +39,34 @@ public class ProductService {
         return ProductInfo.ProductInfoList.of(product, produtDetails);
 
     }
-// 재고 차감 로직 관련하여 고민 필요
-//    public ProductInfo.CheckedProductStock reductStock(Long )
 
+    // 재고 확인
     public boolean validateStock(Long productDetailId, Long requiredQuantity) {
         ProductDetail productDetail = productDetailRepository.findById(productDetailId);
         return productDetail.hasSufficientStock(requiredQuantity);
     }
 
+    // 재고 차감 동시성 이슈 방지를 위한 Lock 설정
+    private static final ConcurrentHashMap<Long, Lock> productQuantityLocks = new ConcurrentHashMap<>();
+
+    // 재고 차감
     public void decreaseStock(Long productDetailId, Long requiredQuantity) {
-        ProductDetail productDetail = productDetailRepository.findById(productDetailId);
-        productDetail.decreaseStock(requiredQuantity);
+        // 상품별 재고 Lock 가져오기
+        Lock lock = productQuantityLocks.computeIfAbsent(productDetailId, k -> new ReentrantLock());
+        
+        // 특정 상품 재고에 대한 작업이 동시에 실행되지 않도록 보장
+        lock.lock();
+
+        try {
+            ProductDetail productDetail = productDetailRepository.findById(productDetailId);
+
+            productDetail.decreaseStock(requiredQuantity);
+        } finally {
+            lock.unlock();
+            productQuantityLocks.remove(productDetailId);
+        }
     }
+
+
+
 }

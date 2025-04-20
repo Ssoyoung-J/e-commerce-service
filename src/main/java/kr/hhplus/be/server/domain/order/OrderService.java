@@ -24,7 +24,7 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        return OrderInfo.Order.of(order.getOrderId(), order.getUserId(), order.getOrderStatus(), order.getTotalAmount(), order.getDiscountAmount(), order.getFinalPrice());
+        return OrderInfo.Order.of(order.getOrderId(), order.getUserId(), order.getOrderStatus(), order.getTotalAmount(), order.getDiscountAmount(), order.getFinalPrice(), order.getOrderItemList());
     }
 
     // 주문 결제 완료

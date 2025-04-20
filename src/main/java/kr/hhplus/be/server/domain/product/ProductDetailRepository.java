@@ -13,7 +13,6 @@ public interface ProductDetailRepository{
     List<ProductDetail> findByProductId(Long productId);
 
 
-//    List<ProductDetail> findByProductIdIn(List<Long> productIds);
 
 
 }
