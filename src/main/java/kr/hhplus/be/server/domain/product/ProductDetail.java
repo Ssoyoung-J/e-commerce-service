@@ -41,14 +41,14 @@ public class ProductDetail extends BaseEntity {
 
     // 재고 확인
     public boolean hasSufficientStock(Long quantity) {
+        if(this.stockQuantity < quantity) {
+            throw new IllegalArgumentException("해당 상품 재고가 부족합니다.");
+        }
         return this.stockQuantity >= quantity;
     }
 
    // 재고 차감
    public void decreaseStock(Long quantity) {
-        if(!hasSufficientStock(quantity)) {
-            throw new IllegalArgumentException("재고가 부족합니다");
-        }
         this.stockQuantity -= quantity;
    }
 

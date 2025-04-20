@@ -6,9 +6,7 @@ import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductCommand;
-import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
-import kr.hhplus.be.server.domain.user.UserCoupon;
 import kr.hhplus.be.server.domain.user.UserCouponService;
 import kr.hhplus.be.server.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +31,8 @@ public class OrderFacade {
      * 주문
      *
      * */
-    public OrderResult.Order order(OrdeCriteria.Order criteria) {
+    public OrderResult.Order order(OrderCriteria.Order criteria) {
         userService.getUser(criteria.getUserId());
-
-        // 상품 조회
-        ProductInfo.ProductInfoList product = productService.findProduct(new ProductCommand.Find(criteria.getUserId()));
 
         // 주문 상품 생성
         List<OrderCommand.OrderItem> orderItemList = criteria.toOrderItemCommand().getOrderItems();
@@ -50,9 +45,36 @@ public class OrderFacade {
 
         // 재고 차감 시 재고 충분 및 재고 부족 검증
         // 재고 부족일 경우 주문 정보 상태값: 주문 취소로 변경, 재고 충분일 경우 주문 정보 상태 값: 결제 대기로 변경
+        
+        // orderItemList 순회하면서 주문한 상품 전체 재고 조회
+        boolean allInStock = order.getOrderItemList().stream().allMatch(item -> {
+            ProductCommand.FindDetail command = new ProductCommand.FindDetail(
+                    item.getProductDetailId(),
+                    item.getProductQuantity()
+            );
+            return productService.hasSufficientStock(command);
+        });
 
+        if(!allInStock) {
+            orderService.cancelOrder(order.getOrderId());
+            throw new RuntimeException("주문 취소 : 일부 상품 재고 부족");
+        }
 
+        try {
+            order.getOrderItemList().forEach(item -> {
+                ProductCommand.FindDetail command = new ProductCommand.FindDetail(
+                        item.getProductDetailId(),
+                        item.getProductQuantity()
+                );
+                productService.decreaseStock(command);
+            });
+        } catch (IllegalArgumentException e) {
+            orderService.cancelOrder(order.getOrderId());
+            throw new RuntimeException("주문 취소 : 재고 차감 중 오류 발생", e);
+        }
+        
 
+        orderService.waitingForPay(order.getOrderId());
 
         return OrderResult.Order.of(order);
     }

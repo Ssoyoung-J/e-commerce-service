@@ -35,19 +35,22 @@ public class OrderCommand {
     @Getter
     public static class OrderItem {
         private final Long productId;
+        private final Long productDetailId;
         private final Long productQuantity;
         private final Long productPrice;
 
         @Builder
-        private OrderItem(Long productId, Long productQuantity, Long productPrice) {
+        private OrderItem(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
             this.productId = productId;
+            this.productDetailId = productDetailId;
             this.productQuantity = productQuantity;
             this.productPrice = productPrice;
         }
 
-        public static OrderItem of(Long productId, Long productQuantity, Long productPrice) {
+        public static OrderItem of(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
             return OrderItem.builder()
                     .productId(productId)
+                    .productDetailId(productDetailId)
                     .productQuantity(productQuantity)
                     .productPrice(productPrice)
                     .build();

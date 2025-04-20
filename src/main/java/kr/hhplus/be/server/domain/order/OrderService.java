@@ -40,9 +40,16 @@ public class OrderService {
         order.updateOrderStatus(OrderStatus.CANCELED);
     }
 
+    // 주문 결제 대기
+    public void waitingForPay(Long orderId) {
+        Order order = orderRepository.findById(orderId);
+        order.updateOrderStatus(OrderStatus.WAIT);
+    }
+
     private OrderItem createOrderItem(OrderCommand.OrderItem orderItem) {
         return OrderItem.of(
                 orderItem.getProductId(),
+                orderItem.getProductDetailId(),
                 orderItem.getProductQuantity(),
                 orderItem.getProductPrice()
         );

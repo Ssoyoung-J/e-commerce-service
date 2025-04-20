@@ -41,30 +41,35 @@ public class ProductService {
     }
 
     // 재고 확인
-    public boolean validateStock(Long productDetailId, Long requiredQuantity) {
-        ProductDetail productDetail = productDetailRepository.findById(productDetailId);
-        return productDetail.hasSufficientStock(requiredQuantity);
+    public boolean hasSufficientStock(ProductCommand.FindDetail command) {
+        ProductDetail detail = productDetailRepository.findById(command.getProductDetailId());
+
+        return detail.hasSufficientStock(detail.getStockQuantity());
     }
+    
 
     // 재고 차감 동시성 이슈 방지를 위한 Lock 설정
     private static final ConcurrentHashMap<Long, Lock> productQuantityLocks = new ConcurrentHashMap<>();
 
     // 재고 차감
-    public void decreaseStock(Long productDetailId, Long requiredQuantity) {
+    public void decreaseStock(ProductCommand.FindDetail command) {
+
         // 상품별 재고 Lock 가져오기
-        Lock lock = productQuantityLocks.computeIfAbsent(productDetailId, k -> new ReentrantLock());
-        
+        Lock lock = productQuantityLocks.computeIfAbsent(command.getProductDetailId(), k -> new ReentrantLock());
+
         // 특정 상품 재고에 대한 작업이 동시에 실행되지 않도록 보장
         lock.lock();
-
         try {
-            ProductDetail productDetail = productDetailRepository.findById(productDetailId);
+            // 상품 조회
+            ProductDetail productDetail = productDetailRepository.findById(command.getProductDetailId());
 
-            productDetail.decreaseStock(requiredQuantity);
+            productDetail.decreaseStock(command.getRequiredQuantity());
+            // 상품 재고 확인
+            productDetail.decreaseStock(command.getRequiredQuantity());
         } finally {
             lock.unlock();
-            productQuantityLocks.remove(productDetailId);
         }
+
     }
 
 

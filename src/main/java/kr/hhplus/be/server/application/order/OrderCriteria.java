@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class OrdeCriteria {
+public class OrderCriteria {
     @Getter
     public static class Order {
         private final Long userId;
@@ -29,7 +29,8 @@ public class OrdeCriteria {
         public OrderCommand.OrderItems toOrderItemCommand() {
             return OrderCommand.OrderItems.of(
                     items.stream()
-                            .map(item -> OrderCommand.OrderItem.of(item.getProductId(), item.getProductQuantity(), item.getProductPrice()))
+                            .map(item -> OrderCommand.OrderItem.of(item.getProductId(), item.getProductDetailId()
+                                    ,item.getProductQuantity(), item.getProductPrice()))
                             .toList()
             );
         }
@@ -41,6 +42,26 @@ public class OrdeCriteria {
                             .build()).toList();
 
             return OrderCommand.Order.of(userId, items, userCouponId);
+        }
+
+    }
+
+    @Getter
+    public static class OrderItem {
+        private final Long productId;
+        private final Long productDetailId;
+        private final Long productQuantity;
+        private final Long productPrice;
+
+        private OrderItem(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+            this.productId = productId;
+            this.productDetailId = productDetailId;
+            this.productQuantity = productQuantity;
+            this.productPrice = productPrice;
+        }
+
+        public static OrderItem of(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+            return new OrderItem(productId, productDetailId, productQuantity, productPrice);
         }
     }
 

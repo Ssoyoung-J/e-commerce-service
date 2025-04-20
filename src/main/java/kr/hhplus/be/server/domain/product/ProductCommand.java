@@ -22,4 +22,22 @@ public class ProductCommand {
                     .productId(productId)
                     .build();}
     }
+
+    @Getter
+    public static class FindDetail {
+        private final Long productDetailId;
+        private final Long requiredQuantity;
+
+        @Builder
+        public FindDetail(Long productDetailId, Long requiredQuantity) {
+            this.productDetailId = productDetailId;
+            this.requiredQuantity = requiredQuantity;
+        }
+
+        public static FindDetail of(Long productDetailId, Long requiredQuantity) {
+            return FindDetail.builder()
+                    .productDetailId(productDetailId)
+                    .requiredQuantity(requiredQuantity)
+                    .build();}
+    }
 }
