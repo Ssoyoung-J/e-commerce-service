@@ -106,5 +106,10 @@ public class UserCoupon extends BaseEntity {
         this.usedAt = LocalDateTime.now();
     }
 
+    // 쿠폰 사용 취소  - cancel
+    public void cancel() {
+        this.userCouponStatus = UserCouponStatus.NOTUSED;
+    }
+
 
 }
