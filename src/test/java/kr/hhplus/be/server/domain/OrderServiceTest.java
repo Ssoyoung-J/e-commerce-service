@@ -12,41 +12,40 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Order Service 단위 테스트
  * */
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
-    @Mock
-    private OrderRepository orderJpaRepository;
+class OrderServiceTest {
+//    @Mock
+//    private OrderRepository orderJpaRepository;
 
     @InjectMocks
-    private OrderService service;
+    private OrderService orderService;
 
     @Nested
     class orderTest {
-//        @DisplayName("주문 비즈니스 로직 검증")
-//        @Test
-//        public void success() {
-//            // given
-//            long userId = 1L;
-//            long productId = 1L;
-//            long productPrice = 2000L;
-//            long productQuantity = 10L;
-//            long couponId = 1L;
-//
-//            List<OrderItemCommand> orderItems = List.of(
-//                    new OrderItemCommand(productId, productPrice, productQuantity)
-//            );
-//
-//            OrderCommand command = new OrderCommand(userId, orderItems, couponId);
-//            Order order = service.createOrder(command);
-//
-//            assertEquals(10L, order.getOrderItemList().get(0).getProductQuantity());
-//
-//
-//        }
+
+        @DisplayName("주문 생성")
+        @Test
+        void createOrder() {
+            // given
+            OrderCommand.Order command = OrderCommand.Order.of(
+                    1L,
+                    List.of(
+                            OrderCommand.OrderItem.of(1L, 1L, 20L, 2000L)
+                    ),
+                    1L
+            );
+
+            // when
+            OrderInfo.Order order = orderService.createOrder(command);
+
+            // then
+            assertThat(order.getFinalPrice()).isEqualTo(40000L);
+        }
     }
 }

@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
  * Point Service 단위 테스트
  * */
 @ExtendWith(MockitoExtension.class)
-public class PointServiceTest {
+class PointServiceTest {
 
     @Mock
     private PointRepository pointRepository;
