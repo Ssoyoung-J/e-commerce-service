@@ -16,6 +16,7 @@ public class UserCouponInfo {
     public static class UsableCoupon {
         private final Long userCouponId;
 
+        @Builder
         private UsableCoupon(Long userCouponId) {
             this.userCouponId = userCouponId;
         }

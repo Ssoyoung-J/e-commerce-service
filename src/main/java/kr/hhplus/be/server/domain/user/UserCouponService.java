@@ -11,20 +11,19 @@ public class UserCouponService {
 
     private final UserCouponRepository userCouponRepository;
 
-    public void createUserCoupon(UserCouponCommand command) {
+    public void createUserCoupon(UserCouponCommand.Publish command) {
         UserCoupon userCoupon = UserCoupon.create(command.getUserId(), command.getCouponId());
         userCouponRepository.save(userCoupon);
     }
 
-    // 비즈니스 로직 검증 필요
-    public UserCouponInfo.UsableCoupon getUsableCoupon(Long userId, Long couponId) {
-        UserCoupon userCoupon = userCouponRepository.findByUserIdAndCouponId(userId, couponId);
+    public UserCouponInfo.UsableCoupon getUsableCoupon(UserCouponCommand.UsableCoupon command) {
+        UserCoupon userCoupon = userCouponRepository.findByUserIdAndCouponId(command.getUserId(), command.getCouponId());
 
         if(userCoupon.getUserCouponStatus() == UserCouponStatus.EXPIRED) {
             throw new IllegalArgumentException("사용할 수 없는 쿠폰입니다.");
         }
 
-        return UserCouponInfo.UsableCoupon.of(userCoupon.getCouponId());
+        return UserCouponInfo.UsableCoupon.of(userCoupon.getUserCouponId());
 
     }
 

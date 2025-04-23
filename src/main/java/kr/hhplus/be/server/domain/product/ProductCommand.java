@@ -17,7 +17,7 @@ public class ProductCommand {
             this.productId = productId;
         }
 
-        public static Find of(Long productId) {
+        private static Find of(Long productId) {
             return Find.builder()
                     .productId(productId)
                     .build();}
