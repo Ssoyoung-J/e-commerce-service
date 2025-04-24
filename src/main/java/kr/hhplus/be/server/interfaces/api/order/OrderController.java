@@ -16,9 +16,9 @@ public class OrderController {
 
    private final OrderFacade orderFacade;
 
-//    @PostMapping(value = "/{userId}")
-//    public Response order(@RequestBody OrderRequest.Order request) {
-//        orderFacade.order(request.toCriteria());
-//        return Response.success();
-//    }
+    @PostMapping(value = "/{userId}")
+    public Response order(@RequestBody OrderRequest.Order request) {
+        orderFacade.order(request.toCriteria());
+        return Response.success();
+    }
 }
