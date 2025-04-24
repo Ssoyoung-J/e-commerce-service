@@ -80,6 +80,26 @@ class UserCouponServicerTest {
 
         }
 
+        @DisplayName("쿠폰 사용")
+        @Test
+        void useCoupon() {
+            // given
+            UserCoupon userCoupon = UserCoupon.builder()
+                    .userCouponId(1L)
+                    .userCouponStatus(UserCouponStatus.NOTUSED)
+                    .build();
+
+            when(userCouponRepository.findById(1L)).thenReturn(userCoupon);
+
+            // when
+            userCouponService.useUserCoupon(userCoupon.getUserCouponId());
+
+            // then
+            verify(userCouponRepository, times(1)).findById(1L);
+            assertThat(userCoupon.getUserCouponStatus()).isEqualTo(UserCouponStatus.USED);
+
+        }
+
     }
 
 }
