@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.testcontainers.shaded.org.checkerframework.checker.units.qual.N;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -61,6 +62,24 @@ class UserCouponServicerTest {
             assertThat(usableCoupon).isNotNull();
             assertThat(usableCoupon.getUserCouponId()).isNotNull();
         }
+
+        @DisplayName("사용일시가 만료된 쿠폰은 사용 불가")
+        @Test
+        void useExpiredCoupon() {
+            // given
+            UserCoupon userCoupon = UserCoupon.builder()
+                    .userCouponStatus(UserCouponStatus.EXPIRED)
+                    .build();
+
+            when(userCouponRepository.findById(anyLong())).thenReturn(userCoupon);
+
+            // when & then
+            assertThatThrownBy(() -> userCouponService.useUserCoupon(anyLong()))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("사용할 수 없는 쿠폰입니다.");
+
+        }
+
     }
 
 }
