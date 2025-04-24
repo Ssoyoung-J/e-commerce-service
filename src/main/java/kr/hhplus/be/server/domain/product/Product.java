@@ -27,7 +27,8 @@ public class Product extends BaseEntity {
     private List<ProductDetail> details = new ArrayList<>();
 
     @Builder
-    public Product(String brand, String productName, List<ProductDetail> details) {
+    public Product(Long productId, String brand, String productName, List<ProductDetail> details) {
+        this.productId = productId;
         this.brand = brand;
         this.productName = productName;
     }
@@ -40,8 +41,9 @@ public class Product extends BaseEntity {
         }
     }
 
-    public static Product create(String brand, String productName) {
+    public static Product create(Long productId, String brand, String productName) {
         return Product.builder()
+                .productId(productId)
                 .brand(brand)
                 .productName(productName)
                 .build();

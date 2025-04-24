@@ -28,11 +28,12 @@ public class ProductDetail extends BaseEntity {
     private Product product;
 
     @Builder
-    public ProductDetail(Long productDetailId, String  optionName, Long productPrice, Long stockQuantity) {
+    public ProductDetail(Long productDetailId, String  optionName, Long productPrice, Long stockQuantity, Product product) {
         this.productDetailId = productDetailId;
         this.optionName = optionName;
         this.productPrice = productPrice;
         this.stockQuantity = stockQuantity;
+        this.product = product;
     }
 
     public void setProduct(Product product) {

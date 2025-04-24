@@ -44,7 +44,7 @@ public class ProductService {
     public boolean hasSufficientStock(ProductCommand.FindDetail command) {
         ProductDetail detail = productDetailRepository.findById(command.getProductDetailId());
 
-        return detail.hasSufficientStock(detail.getStockQuantity());
+        return detail.hasSufficientStock(command.getRequiredQuantity());
     }
     
 
@@ -63,7 +63,6 @@ public class ProductService {
             // 상품 조회
             ProductDetail productDetail = productDetailRepository.findById(command.getProductDetailId());
 
-            productDetail.decreaseStock(command.getRequiredQuantity());
             // 상품 재고 확인
             productDetail.decreaseStock(command.getRequiredQuantity());
         } finally {
