@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.infrastructure.CouponJpaRepository;
+import kr.hhplus.be.server.infrastructure.coupon.CouponJpaRepository;
+import kr.hhplus.be.server.infrastructure.coupon.CouponJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +11,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CouponService {
 
-    private final CouponJpaRepository couponJpaRepository;
+    private final CouponRepository couponRepository;
 
-    public Coupon findById(Long couponId) {
-       Coupon coupon = couponJpaRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException("쿠폰 정보 없음"));
-
-        return coupon;
+    public void publishCoupon(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId);
+        coupon.publish();
     }
+
+    public Coupon getCoupon(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId);
+        return Coupon.create(coupon.getDiscountAmount(),coupon.getQuantity(), coupon.getStatus(), coupon.getExpiredAt());
+    }
+
 }
