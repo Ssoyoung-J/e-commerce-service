@@ -16,7 +16,7 @@ public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "paymentId", nullable = false)
+    @Column(name = "payment_id", nullable = false)
     private Long paymentId;
 
     @Enumerated(EnumType.STRING)
@@ -38,7 +38,8 @@ public class Payment extends BaseEntity {
 //    }
 
     @Builder
-    public Payment(Long orderId, PaymentStatus paymentStatus, Long paymentPrice, LocalDateTime paidAt) {
+    public Payment(Long paymentId, Long orderId, PaymentStatus paymentStatus, Long paymentPrice, LocalDateTime paidAt) {
+        this.paymentId = paymentId;
         this.orderId = orderId;
         this.paymentStatus = paymentStatus;
         this.paymentPrice = paymentPrice;
@@ -51,7 +52,6 @@ public class Payment extends BaseEntity {
                 .orderId(orderId)
                 .paymentStatus(PaymentStatus.PENDING)
                 .paymentPrice(paymentPrice)
-                .paidAt(LocalDateTime.now())
                 .build();
     }
 

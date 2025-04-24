@@ -8,5 +8,5 @@ public interface PaymentRepository {
     Payment save(Payment payment);
 
     // 결제 정보 조회
-    Optional<Payment> findById(Long paymentId);
+    Payment findById(Long paymentId);
 }

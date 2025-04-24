@@ -10,11 +10,12 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     // 결제
-    public Payment pay(PaymentCommand command) {
+    public PaymentInfo.Payment pay(PaymentCommand.Payment command) {
         Payment payment = Payment.create(command.getOrderId(), command.getPaymentPrice());
         payment.pay();
 
-        paymentRepository.save(payment);
-        return payment;
+        Payment savedPayment = paymentRepository.save(payment);
+        return PaymentInfo.Payment.of(savedPayment.getPaymentId());
     }
+
 }
