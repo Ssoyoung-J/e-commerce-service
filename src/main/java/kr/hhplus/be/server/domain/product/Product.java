@@ -16,28 +16,46 @@ public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "productId", nullable = false)
     private Long productId;
 
-    @Column(name = "brand", nullable = false)
     private String brand;
 
-    @Column(name = "productName", nullable = false)
     private String productName;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    // 상품 옵션과 연관관계 설정
+    @OneToMany(mappedBy ="product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductDetail> details = new ArrayList<>();
 
     @Builder
-    public Product(String brand, String productName, List<ProductDetail> details) {
+    public Product(Long productId, String brand, String productName, List<ProductDetail> details) {
+        this.productId = productId;
         this.brand = brand;
         this.productName = productName;
-        if(details != null) {
-            this.details = details;
-            for(ProductDetail detail : details) {
-                detail.assignProduct(this);
-            }
+    }
+
+    // 상품 생성 시 양방향 관계 유지를 위한 상품 옵션 추가
+    public void addDetails(List<ProductDetail> details) {
+        for(ProductDetail detail : details) {
+            this.details.add(detail);
+            detail.setProduct(this);
         }
     }
+
+    public static Product create(Long productId, String brand, String productName) {
+        return Product.builder()
+                .productId(productId)
+                .brand(brand)
+                .productName(productName)
+                .build();
+    }
+
+    public void decreaseStock(Long detailId, Long quantity) {
+        ProductDetail detail = details.stream()
+                .filter(d -> d.getProductDetailId().equals(detailId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("옵션이 존재하지 않습니다."));
+        detail.decreaseStock(quantity);
+    }
+
 
 }

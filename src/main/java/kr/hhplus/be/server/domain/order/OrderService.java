@@ -1,9 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.infrastructure.order.OrderJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,29 +11,50 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final OrderJpaRepository orderJpaRepository;
+    private final OrderRepository orderRepository;
     private final CouponService couponService;
+    private final ExternalPlatform externalPlatform;
 
-    // 주문 정보 생성
-    @Transactional
-    public Order createOrder(OrderCreateCommand command) {
-        // 사용자 주문 상품 조회 OrderItem
-        List<OrderItem> items = command.getOrderItems().stream()
-                .map(item -> OrderItem.of(item.getProductId(), item.getProductPrice(), item.getProductQuantity()))
-                .toList();
-        
-        // 쿠폰 조회
-        Coupon coupon = null;
-        if(command.getCouponId() != null) {
-            coupon = couponService.findById(command.getCouponId());
-        }
+    public OrderInfo.Order createOrder(OrderCommand.Order command) {
+        List<OrderItem> orderItems = command.getOrderItems().stream()
+                .map(this::createOrderItem).toList();
+        Coupon coupon = couponService.getCoupon(command.getUserCouponId());
 
-        // 주문 생성
-        Order order = Order.create(command.getUserId(), items, coupon);
+        Order order = Order.create(command.getUserId(), orderItems, coupon);
 
-        return order;
+        orderRepository.save(order);
+
+        return OrderInfo.Order.of(order.getOrderId(), order.getUserId(), order.getOrderStatus(), order.getTotalAmount(), order.getDiscountAmount(), order.getFinalPrice(), order.getOrderItemList());
     }
 
+    // 주문 결제 완료
+    public void paidOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId);
+        order.updateOrderStatus(OrderStatus.PAID);
+        externalPlatform.sendOrder(order);
+    }
 
+    // 주문 취소
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId);
+        order.updateOrderStatus(OrderStatus.CANCELED);
+    }
+
+    // 주문 결제 대기
+    public void waitingForPay(Long orderId) {
+        Order order = orderRepository.findById(orderId);
+        order.updateOrderStatus(OrderStatus.WAIT);
+    }
+
+    private OrderItem createOrderItem(OrderCommand.OrderItem orderItem) {
+        return OrderItem.of(
+                orderItem.getProductId(),
+                orderItem.getProductDetailId(),
+                orderItem.getProductQuantity(),
+                orderItem.getProductPrice()
+        );
+    }
 
 }
+
+

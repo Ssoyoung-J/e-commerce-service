@@ -16,7 +16,7 @@ public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "paymentId", nullable = false)
+    @Column(name = "payment_id", nullable = false)
     private Long paymentId;
 
     @Enumerated(EnumType.STRING)
@@ -29,18 +29,38 @@ public class Payment extends BaseEntity {
     @Column(name = "paidAt", nullable = false)
     private LocalDateTime paidAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false, unique = true)
-    private Order order;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    private Long orderId;
 
-    public void assignOrder(Order order) {
-        this.order = order;
-    }
+//    public void assignOrder(Order order) {
+//        this.order = order;
+//    }
 
     @Builder
-    public Payment(PaymentStatus paymentStatus, Long paymentPrice, LocalDateTime paidAt) {
+    public Payment(Long paymentId, Long orderId, PaymentStatus paymentStatus, Long paymentPrice, LocalDateTime paidAt) {
+        this.paymentId = paymentId;
+        this.orderId = orderId;
         this.paymentStatus = paymentStatus;
         this.paymentPrice = paymentPrice;
         this.paidAt = paidAt;
+    }
+
+    // 결제 정보 생성
+    public static Payment create(Long orderId, Long paymentPrice) {
+        return Payment.builder()
+                .orderId(orderId)
+                .paymentStatus(PaymentStatus.PENDING)
+                .paymentPrice(paymentPrice)
+                .build();
+    }
+
+    // 결제
+    public void pay() {
+        if(paymentStatus.equals(PaymentStatus.CANCELED)) {
+            throw new IllegalArgumentException("결제가 취소되었습니다.");
+        }
+        this.paymentStatus = PaymentStatus.COMPLETED;
+        this.paidAt = LocalDateTime.now();
     }
 }

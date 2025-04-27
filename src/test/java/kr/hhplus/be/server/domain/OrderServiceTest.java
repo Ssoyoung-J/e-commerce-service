@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain;
 
 import kr.hhplus.be.server.domain.order.*;
-import kr.hhplus.be.server.infrastructure.order.OrderJpaRepository;
+import kr.hhplus.be.server.domain.order.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,46 +10,42 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Order Service 단위 테스트
  * */
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
-    @Mock
-    private OrderJpaRepository orderJpaRepository;
+class OrderServiceTest {
+//    @Mock
+//    private OrderRepository orderJpaRepository;
 
     @InjectMocks
-    private OrderService service;
+    private OrderService orderService;
 
     @Nested
     class orderTest {
-        @DisplayName("주문 비즈니스 로직 검증")
-        @Test
-        public void success() {
-            // given
-            long userId = 1L;
-            long productId = 1L;
-            long productPrice = 2000L;
-            long productQuantity = 10L;
-            long couponId = 1L;
 
-            List<OrderItemCommand> orderItems = List.of(
-                    new OrderItemCommand(productId, productPrice, productQuantity)
+        @DisplayName("주문 생성")
+        @Test
+        void createOrder() {
+            // given
+            OrderCommand.Order command = OrderCommand.Order.of(
+                    1L,
+                    List.of(
+                            OrderCommand.OrderItem.of(1L, 1L, 20L, 2000L)
+                    ),
+                    1L
             );
 
-            OrderCreateCommand command = new OrderCreateCommand(userId, orderItems, couponId);
-            Order order = service.createOrder(command);
+            // when
+            OrderInfo.Order order = orderService.createOrder(command);
 
-            assertEquals(10L, order.getOrderItemList().get(0).getProductQuantity());
-
-
+            // then
+            assertThat(order.getFinalPrice()).isEqualTo(40000L);
         }
     }
 }
