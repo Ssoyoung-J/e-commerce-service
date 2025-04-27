@@ -31,29 +31,38 @@ class PointServiceTest {
     private PointHistoryRepository pointHistoryRepository;
 
     @InjectMocks
-    private PointService service;
+    private PointService pointService;
 
     @Nested
     class pointChargeTest {
-        @DisplayName("충전 포인트가 0보다 클 경우 - 포인트 충전 성공")
+        @DisplayName("포인트 충전 검증 성공 - 충전 포인트 >= 0")
         @Test
         void success() {
             // given
-            PointCommand command = mock(PointCommand.class);
-            Point userPoint = mock(Point.class);
+            Long userId = 1L;
+            Long balance = 10L;
+            Long pointAmount = 20L;
 
-            when(pointRepository.findByUserId(command.getUserId())).thenReturn(Optional.of(userPoint));
+            PointCommand.Point command = PointCommand.Point.of(userId, balance, pointAmount);
+            Point userPoint = Point.builder()
+                            .userId(userId)
+                            .balance(balance)
+                            .pointAmount(pointAmount)
+                            .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
 
             // when
-            service.chargePoint(command);
+            pointService.chargePoint(command);
 
             // then
-            verify(userPoint, times(1)).charge(command.getPointAmount());
+            verify(pointRepository, times(1)).findByUserId(command.getUserId());
             verify(pointRepository, times(0)).save(userPoint);
+            assertThat(userPoint.getBalance()).isEqualTo(30L);
 
         }
 
-        @DisplayName("충전 포인트가 음수일 경우 - 포인트 충전 실패")
+        @DisplayName("포인트 충전 검증 실패 - 충전 금액: 음수")
         @Test
         public void shouldChargeFail_whenNegativeAmount(){
             //  given
@@ -61,13 +70,18 @@ class PointServiceTest {
             long balance = 10L;
             long pointAmount = -20L;
 
-            PointCommand command = new PointCommand(userId, balance, pointAmount);
-            Point userPoint = Point.create(command.getUserId(), command.getBalance());
+            PointCommand.Point command = PointCommand.Point.of(userId, balance, pointAmount);
 
-            when(pointRepository.findByUserId(command.getUserId())).thenReturn(Optional.of(userPoint));
+            Point userPoint = Point.builder()
+                    .userId(userId)
+                    .balance(balance)
+                    .pointAmount(pointAmount)
+                    .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
 
             // when & then
-            assertThatThrownBy(() -> service.chargePoint(command))
+            assertThatThrownBy(() -> pointService.chargePoint(command))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("충전 포인트는 0보다 작을 수 없습니다.");
 
@@ -77,7 +91,7 @@ class PointServiceTest {
     @Nested
     class pointUseTest {
 
-        @DisplayName("사용 포인트가 보유 포인트보다 클 경우 - 포인트 사용 실패")
+        @DisplayName("포인트 사용 검증 실패 - 사용 포인트 > 보유 포인트")
         @Test
         public void shouldUseFail_WhenUserHasInSufficientPoints(){
 
@@ -86,13 +100,18 @@ class PointServiceTest {
             long balance = 100L;
             long pointAmount = 2000L;
 
-            PointCommand command = new PointCommand(userId, balance, pointAmount);
-            Point userPoint = Point.create(command.getUserId(), command.getBalance());
+            PointCommand.Point command = PointCommand.Point.of(userId, balance, pointAmount);
 
-            when(pointRepository.findByUserId(command.getUserId())).thenReturn(Optional.of(userPoint));
+            Point userPoint = Point.builder()
+                    .userId(userId)
+                    .balance(balance)
+                    .pointAmount(pointAmount)
+                    .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
 
             // when & then
-            assertThatThrownBy(() -> service.usePoint(command))
+            assertThatThrownBy(() -> pointService.usePoint(command))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("사용 포인트는 보유 포인트보다 클 수 없습니다.");
 
