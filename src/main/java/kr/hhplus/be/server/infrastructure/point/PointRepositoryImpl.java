@@ -16,8 +16,10 @@ public class PointRepositoryImpl implements PointRepository {
     
     // 사용자 포인트 조회
     @Override
-    public Optional<Point> findByUserId(Long userId) {
-        return pointJpaRepository.findById(userId);
+    public Point findByUserId(Long userId) {
+        return pointJpaRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("일치하는 포인트 정보가 없습니다.")
+        );
     }
 
     // 사용자 포인트 저장

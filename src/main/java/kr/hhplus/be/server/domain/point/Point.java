@@ -40,10 +40,11 @@ public class Point {
 
 
     @Builder
-    public Point(Long pointId, Long userId, Long balance) {
+    public Point(Long pointId, Long userId, Long balance, Long pointAmount) {
         this.pointId = pointId;
         this.userId = userId;
         this.balance = balance;
+        this.pointAmount = pointAmount;
     }
 
     public static Point create(Long userId, Long balance) {

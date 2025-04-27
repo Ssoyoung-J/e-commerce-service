@@ -1,17 +1,29 @@
 package kr.hhplus.be.server.domain.point;
 
-import lombok.Value;
+import lombok.*;
 
-@Value
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PointCommand {
 
-    // 사용자 고유 id
-    Long userId;
+    @Getter
+    public static class Point {
+        private final Long userId;
+        private final Long balance;
+        private final Long pointAmount;
 
-    // 보유 포인트
-    Long balance;
+        @Builder
+        private Point(Long userId, Long balance, Long pointAmount) {
+            this.userId = userId;
+            this.balance = balance;
+            this.pointAmount = pointAmount;
+        }
 
-    // 포인트(사용/충전)
-    Long pointAmount;
-
+        public static Point of(Long userId, Long balance, Long pointAmount) {
+            return Point.builder()
+                    .userId(userId)
+                    .balance(balance)
+                    .pointAmount(pointAmount)
+                    .build();
+        }
+    }
 }

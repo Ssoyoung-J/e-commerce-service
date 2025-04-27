@@ -13,24 +13,23 @@ public class PointService {
     private static final long BALANCE = 0L;
 
     // 포인트 충전
-    public void chargePoint(PointCommand command) {
-        pointRepository.findByUserId(command.getUserId())
-                .ifPresentOrElse(
-                        point -> point.charge(command.getPointAmount()),
-                        () -> {
-                            Point point = Point.create(command.getUserId(), command.getBalance());
-                            pointRepository.save(point);
-                        }
-                );
+    public void chargePoint(PointCommand.Point command) {
+        try {
+            Point point = pointRepository.findByUserId(command.getUserId());
+            point.charge(command.getPointAmount());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
     }
 
     // 포인트 사용
-    public void usePoint(PointCommand command) {
-        pointRepository.findByUserId(command.getUserId())
-                .ifPresentOrElse(point -> point.use(command.getPointAmount()),
-                        () -> {
-                    throw new IllegalArgumentException("보유 포인트가 존재하지 않습니다.");
-                        });
+    public void usePoint(PointCommand.Point command) {
+        try {
+            Point point =  pointRepository.findByUserId(command.getUserId());
+            point.use(command.getPointAmount());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
     }
    
 }
