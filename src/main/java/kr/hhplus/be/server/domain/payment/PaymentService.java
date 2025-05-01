@@ -15,7 +15,7 @@ public class PaymentService {
         payment.pay();
 
         Payment savedPayment = paymentRepository.save(payment);
-        return PaymentInfo.Payment.of(savedPayment.getPaymentId());
+        return PaymentInfo.Payment.of(savedPayment.getOrderId(), savedPayment.getPaymentId());
     }
 
 }
