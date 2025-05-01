@@ -1,6 +1,9 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.hhplus.be.server.domain.order.OrderCommand;
+import kr.hhplus.be.server.domain.order.OrderInfo;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +46,25 @@ public class ProductService {
     // 재고 확인
     public boolean hasSufficientStock(ProductCommand.FindDetail command) {
         ProductDetail detail = productDetailRepository.findById(command.getProductDetailId());
-
         return detail.hasSufficientStock(command.getRequiredQuantity());
+    }
+
+    // 주문 가능 상품 재고 조회
+    public List<OrderCommand.OrderItem> filterAvailableItems(List<OrderCommand.OrderItem> items) {
+        List<OrderCommand.OrderItem> availableItems =  items.stream()
+                .filter(item -> {
+                    ProductCommand.FindDetail command = new ProductCommand.FindDetail(
+                            item.getProductDetailId(),
+                            item.getProductQuantity()
+                    );
+                    return hasSufficientStock(command);
+                }).toList();
+
+        if (availableItems.isEmpty()) {
+            throw new RuntimeException("주문 실패: 모든 상품의 재고가 부족합니다.");
+        }
+
+        return availableItems;
     }
     
 
