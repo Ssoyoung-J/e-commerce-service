@@ -21,8 +21,6 @@ public class OrderFacade {
 
     private final OrderService orderService;
     private final ProductService productService;
-    private final CouponService couponService;
-    private final PaymentService paymentService;
     private final UserService userService;
     private final UserCouponService userCouponService;
 

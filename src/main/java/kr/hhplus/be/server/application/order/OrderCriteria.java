@@ -4,6 +4,7 @@ import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.user.UserCouponCommand;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ public class OrderCriteria {
         private final List<OrderItem> items;
         private final Long userCouponId;
 
+        @Builder
         private Order(Long userId, List<OrderItem> items, Long userCouponId) {
             this.userId = userId;
             this.items = items;
@@ -57,6 +59,7 @@ public class OrderCriteria {
         private final Long productQuantity;
         private final Long productPrice;
 
+        @Builder
         private OrderItem(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
             this.productId = productId;
             this.productDetailId = productDetailId;
