@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.api.point;
+package kr.hhplus.be.server.presentation.point;
 
 public class PointRequest {
 

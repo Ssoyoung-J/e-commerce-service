@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.api;
+package kr.hhplus.be.server.presentation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

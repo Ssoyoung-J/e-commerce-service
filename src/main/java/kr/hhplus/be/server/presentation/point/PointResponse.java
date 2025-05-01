@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.api.point;
+package kr.hhplus.be.server.presentation.point;
 
 import lombok.Getter;
 import lombok.Setter;

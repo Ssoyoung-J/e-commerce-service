@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.api.point;
+package kr.hhplus.be.server.presentation.point;
 
 import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointCommand;
