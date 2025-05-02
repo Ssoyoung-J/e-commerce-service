@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.point;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Point {
+public class Point extends BaseEntity {
 
     /**
      * 포인트 고유 ID

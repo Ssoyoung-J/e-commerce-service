@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.point;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Entity
-public class PointHistory {
+public class PointHistory extends BaseEntity {
     /**
      * 포인트 충전/사용 내역 고유 ID
      * */
@@ -32,6 +33,9 @@ public class PointHistory {
     @Column(name="transactionType", nullable = false)
     private PointTransactionType transactionType;
 
+    public enum PointTransactionType {
+        CHARGE, USE
+    }
 
     /**
      * 포인트
@@ -39,29 +43,21 @@ public class PointHistory {
     @Column(name="pointAmount", nullable = false)
     private Long pointAmount;
 
-    /**
-     * 포인트 사용/충전 일시
-     * */
-    @Column(name="createdAt", nullable = false)
-    private LocalDateTime createdAt;
-
 
     @Builder
-    public PointHistory(Long pointHistoryId, Long userId, PointTransactionType transactionType, Long pointAmount, LocalDateTime createdAt) {
+    public PointHistory(Long pointHistoryId, Long userId, PointTransactionType transactionType, Long pointAmount) {
         this.pointHistoryId = pointHistoryId;
         this.userId = userId;
         this.transactionType = transactionType;
         this.pointAmount = pointAmount;
-        this.createdAt = createdAt;
     }
 
     // 포인트 충전/사용 내역 저장
-    public static PointHistory saveHistory(Long userId, PointTransactionType transactionType, Long pointAmount, LocalDateTime createdAt) {
+    public static PointHistory saveHistory(Long userId, PointTransactionType transactionType, Long pointAmount) {
         return PointHistory.builder()
                 .userId(userId)
                 .transactionType(transactionType)
                 .pointAmount(pointAmount)
-                .createdAt(createdAt)
                 .build();
     }
 

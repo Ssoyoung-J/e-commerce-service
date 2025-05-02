@@ -8,20 +8,17 @@ public class PointCommand {
     @Getter
     public static class Point {
         private final Long userId;
-        private final Long balance;
         private final Long pointAmount;
 
         @Builder
-        private Point(Long userId, Long balance, Long pointAmount) {
+        private Point(Long userId, Long pointAmount) {
             this.userId = userId;
-            this.balance = balance;
             this.pointAmount = pointAmount;
         }
 
-        public static Point of(Long userId, Long balance, Long pointAmount) {
+        public static Point of(Long userId, Long pointAmount) {
             return Point.builder()
                     .userId(userId)
-                    .balance(balance)
                     .pointAmount(pointAmount)
                     .build();
         }

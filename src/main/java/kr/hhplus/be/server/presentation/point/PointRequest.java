@@ -1,11 +1,12 @@
 package kr.hhplus.be.server.presentation.point;
 
-public class PointRequest {
+public record PointRequest() {
 
-    class Charge {
-        Long userId;
+    public record Charge(
+        Long userId,
+        Long pointAmount
+    ) {
 
-        Long pointAmount;
     }
 
 }

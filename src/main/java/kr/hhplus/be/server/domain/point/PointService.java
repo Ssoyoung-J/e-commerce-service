@@ -4,19 +4,30 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Service
 public class PointService {
 
     private final PointRepository pointRepository;
+
+    private final PointHistoryRepository pointHistoryRepository;
+
     // 포인트 기본값 지정
     private static final long BALANCE = 0L;
 
     // 포인트 충전
-    public void chargePoint(PointCommand.Point command) {
+    public PointInfo.Balance chargePoint(PointCommand.Point command) {
         try {
             Point point = pointRepository.findByUserId(command.getUserId());
             point.charge(command.getPointAmount());
+
+            PointHistory pointHistory = PointHistory.saveHistory(command.getUserId(), PointHistory.PointTransactionType.CHARGE, command.getPointAmount());
+            pointHistoryRepository.save(pointHistory);
+
+            return PointInfo.Balance.from(point);
+
         } catch (IllegalArgumentException e) {
             throw e;
         }

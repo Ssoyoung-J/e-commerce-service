@@ -1,13 +1,39 @@
 package kr.hhplus.be.server.presentation.point;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class PointResponse {
+import kr.hhplus.be.server.application.point.PointResult;
+import kr.hhplus.be.server.domain.point.PointInfo;
 
-    private Long userId;
+import java.time.LocalDateTime;
 
-    private Long balance;
+public record PointResponse() {
+
+    public record Transaction(
+            Long Id,
+            Long userId,
+            Long balance,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        public static Transaction from(PointResult.Transaction point) {
+            return new Transaction(
+                    point.getPointId(),
+                    point.getUserId(),
+                    point.getBalance(),
+                    point.getCreatedAt(),
+                    point.getUpdatedAt()
+            );
+        }
+
+    }
+
+    public record History(
+        Long pointHistoryId,
+        Long userId,
+        Long pointAmount,
+
+        LocalDateTime createdAt
+    ){
+
+    }
 }
