@@ -43,7 +43,7 @@ class PointServiceTest {
             Long balance = 10L;
             Long pointAmount = 20L;
 
-            PointCommand.Point command = PointCommand.Point.of(userId, balance, pointAmount);
+            PointCommand.Transaction command = PointCommand.Transaction.of(userId, pointAmount);
             Point userPoint = Point.builder()
                             .userId(userId)
                             .balance(balance)
@@ -70,7 +70,7 @@ class PointServiceTest {
             long balance = 10L;
             long pointAmount = -20L;
 
-            PointCommand.Point command = PointCommand.Point.of(userId, balance, pointAmount);
+            PointCommand.Transaction command = PointCommand.Transaction.of(userId, pointAmount);
 
             Point userPoint = Point.builder()
                     .userId(userId)

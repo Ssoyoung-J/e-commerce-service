@@ -25,10 +25,9 @@ public class PointFacade {
         UserInfo.User user = userService.getUser(criteria.getUserId());
 
         // 사용자 포인트 조회
-        PointInfo.Balance userBalance = pointService.getUserBalance(criteria.toPointCommand(criteria.getUserId(), c))
+        PointInfo.Balance userBalance = pointService.getUserBalance(criteria.toBalanceCommand(criteria.getUserId()));
         // 사용자 포인트 충전
-        PointCommand.Point command = PointCommand.Point.of(criteria.getUserId(), criteria.getPointAmount());
-        PointInfo.Balance charge = pointService.chargePoint(command);
+        PointInfo.Balance charge = pointService.chargePoint(criteria.toTransactionCommand(criteria.getUserId(), criteria.getPointAmount()));
 
         PointResult.Transaction result = new PointResult.Transaction(charge.getPointHistoryId(), charge.getUserId(), charge.getBalance(), charge.getCreatedAt(), charge.getUpdatedAt());
         return result;

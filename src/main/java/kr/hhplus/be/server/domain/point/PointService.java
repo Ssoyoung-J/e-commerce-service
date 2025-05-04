@@ -18,14 +18,14 @@ public class PointService {
     private static final long BALANCE = 0L;
 
     // 포인트 조회
-    public PointInfo.Balance getUserBalance(PointCommand.Point command) {
+    public PointInfo.Balance getUserBalance(PointCommand.Balance command) {
         Point userBalance = pointRepository.findByUserId(command.getUserId());
         PointInfo.Balance result = PointInfo.Balance.from(userBalance);
         return result;
     }
 
     // 포인트 충전
-    public PointInfo.Balance chargePoint(PointCommand.Point command) {
+    public PointInfo.Balance chargePoint(PointCommand.Transaction command) {
         try {
             Point point = pointRepository.findByUserId(command.getUserId());
             point.charge(command.getPointAmount());
