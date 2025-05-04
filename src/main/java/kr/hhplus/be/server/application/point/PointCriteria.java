@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.point;
 
+import kr.hhplus.be.server.domain.point.PointCommand;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,10 @@ public class PointCriteria {
 
         public static UserPoint of(Long userId, Long pointAmount) {
             return new UserPoint(userId, pointAmount);
+        }
+
+        public PointCommand.Point toPointCommand(Long userId, Long balance, Long pointAmount) {
+            return PointCommand.Point.of(userId, balance, pointAmount);
         }
     }
 }

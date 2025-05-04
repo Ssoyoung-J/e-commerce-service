@@ -17,6 +17,13 @@ public class PointService {
     // 포인트 기본값 지정
     private static final long BALANCE = 0L;
 
+    // 포인트 조회
+    public PointInfo.Balance getUserBalance(PointCommand.Point command) {
+        Point userBalance = pointRepository.findByUserId(command.getUserId());
+        PointInfo.Balance result = PointInfo.Balance.from(userBalance);
+        return result;
+    }
+
     // 포인트 충전
     public PointInfo.Balance chargePoint(PointCommand.Point command) {
         try {
