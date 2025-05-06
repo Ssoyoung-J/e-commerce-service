@@ -67,7 +67,7 @@ public final class PointInfo {
                     .pointHistoryId(pointHistory.getPointHistoryId())
                     .userId(pointHistory.getUserId())
                     .pointAmount(pointHistory.getPointAmount())
-                    .type(pointHistory.getTransactionType())
+                    .type(pointHistory.getType())
                     .createdAt(pointHistory.getCreatedAt())
                     .updatedAt(pointHistory.getUpdatedAt())
                     .build();

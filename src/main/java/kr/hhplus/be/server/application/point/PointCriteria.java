@@ -40,4 +40,22 @@ public class PointCriteria {
                 return PointCommand.Transaction.of(userId, pointAmount);
         }
     }
+
+    @Getter
+    public static class Balance {
+        private final Long userId;
+
+        @Builder
+        private Balance(Long userId) {
+            this.userId = userId;
+        }
+
+        public static Balance of(Long userId) {
+            return new Balance(userId);
+        }
+
+        public PointCommand.Balance toBalanceCommand(Long userId) {
+            return PointCommand.Balance.of(userId);
+        }
+    }
 }

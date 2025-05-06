@@ -31,7 +31,7 @@ public class PointHistory extends BaseEntity {
      * 포인트 타입(충전/사용)
      * */
     @Column(name="transactionType", nullable = false)
-    private PointTransactionType transactionType;
+    private PointTransactionType type;
 
     public enum PointTransactionType {
         CHARGE, USE
@@ -45,18 +45,18 @@ public class PointHistory extends BaseEntity {
 
 
     @Builder
-    public PointHistory(Long pointHistoryId, Long userId, PointTransactionType transactionType, Long pointAmount) {
+    public PointHistory(Long pointHistoryId, Long userId, PointTransactionType type, Long pointAmount) {
         this.pointHistoryId = pointHistoryId;
         this.userId = userId;
-        this.transactionType = transactionType;
+        this.type = type;
         this.pointAmount = pointAmount;
     }
 
     // 포인트 충전/사용 내역 저장
-    public static PointHistory saveHistory(Long userId, PointTransactionType transactionType, Long pointAmount) {
+    public static PointHistory saveHistory(Long userId, PointTransactionType type, Long pointAmount) {
         return PointHistory.builder()
                 .userId(userId)
-                .transactionType(transactionType)
+                .type(type)
                 .pointAmount(pointAmount)
                 .build();
     }

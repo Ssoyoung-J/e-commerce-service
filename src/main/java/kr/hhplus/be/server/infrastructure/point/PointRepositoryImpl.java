@@ -1,8 +1,10 @@
 package kr.hhplus.be.server.infrastructure.point;
 
+import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.usertype.BaseUserTypeSupport;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -18,7 +20,7 @@ public class PointRepositoryImpl implements PointRepository {
     @Override
     public Point findByUserId(Long userId) {
         return pointJpaRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("일치하는 포인트 정보가 없습니다.")
+                () -> new BusinessException(400, "일치하는 포인트 정보가 없습니다.")
         );
     }
 
