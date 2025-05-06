@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain;
 
+import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.domain.point.*;
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointRepository;
@@ -12,10 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -32,6 +32,34 @@ class PointServiceTest {
 
     @InjectMocks
     private PointService pointService;
+
+    @Nested
+    @DisplayName("포인트 조회")
+    class pointCheckTest {
+        @DisplayName("포인트 조회 성공 - 유효한 사용자 ID")
+        @Test
+        void success() {
+            // given
+            Long userId = 1L;
+            Long balance = 2000L;
+            PointCommand.Balance command = PointCommand.Balance.of(userId);
+            Point userPoint = Point.builder()
+                            .userId(userId)
+                            .balance(balance)
+                            .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
+
+            // when
+            pointService.getUserBalance(command);
+
+            // then
+            verify(pointRepository, times(1)).findByUserId(command.getUserId());
+            assertThat(userPoint).isNotNull();
+            assertThat(userPoint.getUserId()).isEqualTo(userId);
+            assertThat(userPoint.getBalance()).isEqualTo(2000L);
+        }
+    }
 
     @Nested
     class pointChargeTest {
@@ -82,7 +110,7 @@ class PointServiceTest {
 
             // when & then
             assertThatThrownBy(() -> pointService.chargePoint(command))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(BusinessException.class)
                     .hasMessage("충전 포인트는 0보다 작을 수 없습니다.");
 
         }
@@ -112,9 +140,61 @@ class PointServiceTest {
 
             // when & then
             assertThatThrownBy(() -> pointService.usePoint(command))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(BusinessException.class)
                     .hasMessage("사용 포인트는 보유 포인트보다 클 수 없습니다.");
 
+        }
+    }
+
+    @Nested
+    @DisplayName("포인트 내역 조회")
+    class PointHistoryTest {
+
+        @DisplayName("사용자의 포인트 내역 조회 성공")
+        @Test
+        void success() {
+            // given
+            long userId = 1L;
+            PointCommand.Balance command = PointCommand.Balance.of(userId);
+
+            PointHistory chargeHistory = PointHistory.builder()
+                    .pointHistoryId(10L)
+                    .userId(userId)
+                    .type(PointHistory.PointTransactionType.CHARGE)
+                    .pointAmount(1000L)
+                    .build();
+
+            PointHistory usetHistory = PointHistory.builder()
+                    .pointHistoryId(10L)
+                    .userId(userId)
+                    .type(PointHistory.PointTransactionType.USE)
+                    .pointAmount(20_000L)
+                    .build();
+
+            List<PointHistory> pointHistories = List.of(chargeHistory, usetHistory);
+
+            when(pointHistoryRepository.findPointHistoryByUserId(userId)).thenReturn(pointHistories);
+
+            // when
+            List<PointInfo.History> pointInfo = pointService.getUserPointHistories(command);
+
+            // then
+            assertThat(pointInfo).hasSize(2);
+            verify(pointHistoryRepository, times(1)).findPointHistoryByUserId(userId);
+
+            PointInfo.History charge = pointInfo.get(0);
+            assertThat(charge).isNotNull();
+            assertThat(charge.getPointHistoryId()).isEqualTo(10L);
+            assertThat(charge.getUserId()).isEqualTo(userId);
+            assertThat(charge.getType()).isEqualTo(PointHistory.PointTransactionType.CHARGE);
+            assertThat(charge.getPointAmount()).isEqualTo(1000L);
+
+            PointInfo.History use = pointInfo.get(1);
+            assertThat(use).isNotNull();
+            assertThat(use.getPointHistoryId()).isEqualTo(10L);
+            assertThat(use.getUserId()).isEqualTo(userId);
+            assertThat(use.getType()).isEqualTo(PointHistory.PointTransactionType.USE);
+            assertThat(use.getPointAmount()).isEqualTo(20_000L);
         }
     }
 
