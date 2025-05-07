@@ -18,24 +18,25 @@ public class OrderRequest {
 
         @NotNull(message = "사용자 ID는 필수입니다.")
         private Long userId;
-        private Long userCouponId;
 
         @NotEmpty(message = "주문 상품 목록은 1개 이상이어야 합니다.")
         private List<OrderItem> orderItemList;
 
-        private Order(Long userId, Long userCouponId, List<OrderItem> orderItemList) {
+        private Long userCouponId;
+
+        private Order(Long userId,List<OrderItem> orderItemList, Long userCouponId) {
             this.userId = userId;
-            this.userCouponId = userCouponId;
             this.orderItemList = orderItemList;
+            this.userCouponId = userCouponId;
         }
 
-        public static Order of(Long userId, Long userCouponId, List<OrderItem> orderItemList) {
-            return new Order(userId, userCouponId, orderItemList);
+        public static Order of(Long userId, List<OrderItem> orderItemList, Long userCouponId) {
+            return new Order(userId, orderItemList, userCouponId);
         }
 
         public OrderCriteria.Order toCriteria() {
             return OrderCriteria.Order.of(userId, orderItemList.stream()
-                    .map(OrderItem::toCriteria)
+                    .map(OrderRequest.OrderItem::toCriteria)
                     .toList(), userCouponId);
         }
     }

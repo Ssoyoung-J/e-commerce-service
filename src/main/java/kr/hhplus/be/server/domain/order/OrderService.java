@@ -17,6 +17,7 @@ public class OrderService {
     private final ProductService productService;
     private final ExternalPlatform externalPlatform;
 
+    // 주문 생성 쿠폰 적용 반영 필요
     public OrderInfo.Order createOrder(OrderCommand.Order command) {
         List<OrderItem> orderItems = command.getOrderItems().stream()
                 .map(this::createOrderItem).toList();
@@ -26,7 +27,7 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        return OrderInfo.Order.of(order.getOrderId(), order.getUserId(), order.getOrderStatus(), order.getTotalAmount(), order.getDiscountAmount(), order.getFinalPrice(), order.getOrderItemList());
+        return OrderInfo.Order.of(order.getOrderId(), order.getUserId(), order.getStatus(), order.getTotalAmount(), order.getDiscountAmount(), order.getFinalPrice(), order.getOrderItemList());
     }
 
 //    public void processOrder(OrderInfo.Order order) {
@@ -40,20 +41,20 @@ public class OrderService {
     // 주문 결제 완료
     public void paidOrder(Long orderId) {
         Order order = orderRepository.findById(orderId);
-        order.updateOrderStatus(OrderStatus.PAID);
+        order.updateOrderStatus(Order.OrderStatus.PAID);
         externalPlatform.sendOrder(order);
     }
 
     // 주문 취소
     public void cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId);
-        order.updateOrderStatus(OrderStatus.CANCELED);
+        order.updateOrderStatus(Order.OrderStatus.CANCELED);
     }
 
     // 주문 결제 대기
     public void waitingForPay(Long orderId) {
         Order order = orderRepository.findById(orderId);
-        order.updateOrderStatus(OrderStatus.WAIT);
+        order.updateOrderStatus(Order.OrderStatus.PAYMENT_WAITING);
     }
 
     private OrderItem createOrderItem(OrderCommand.OrderItem orderItem) {

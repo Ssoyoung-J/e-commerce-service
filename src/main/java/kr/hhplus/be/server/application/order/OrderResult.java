@@ -1,12 +1,10 @@
 package kr.hhplus.be.server.application.order;
 
 import kr.hhplus.be.server.domain.order.OrderInfo;
-import kr.hhplus.be.server.domain.order.OrderStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class OrderResult {

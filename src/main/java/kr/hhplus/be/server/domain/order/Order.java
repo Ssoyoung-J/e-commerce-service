@@ -30,13 +30,14 @@ public class Order extends BaseEntity {
     /**
      * 사용자 고유 ID
      * */
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
 
     /**
      * 사용자 쿠폰 고유 ID
      * */
+    @Column(name = "user_coupon_id", nullable = false)
     private Long userCouponId;
 
     /**
@@ -44,7 +45,11 @@ public class Order extends BaseEntity {
      * */
     @Enumerated(EnumType.STRING)
     @Column(name = "orderStatus", nullable = false)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
+
+    public enum OrderStatus {
+        PAYMENT_WAITING , PAID, CANCELED
+    }
 
     /**
      * 주문 항목 목록
@@ -61,65 +66,32 @@ public class Order extends BaseEntity {
     /**
      * 상품 총 금액
      * */
-    @Column(name = "totalAmount", nullable = false)
+    @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
-    /**
-     * 할인 금액
-     * */
-    @Column(name = "discountAmount", nullable = false)
-    private Long discountAmount;
-
-    /**
-     * 최종 결제 금액
-     * */
-    @Column(name = "finalPrice", nullable = false)
-    private Long finalPrice;
-
-//    /**
-//     * 결제
-//     * */
-//    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private Payment payment;
-
-//    public void assignPayment(Payment payment) {
-//        this.payment = payment;
-//        payment.assignOrder(this);
-//    }
 
     @Builder
-    public Order(Long userId, OrderStatus orderStatus, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount, Long finalPrice) {
+    public Order(Long userId, OrderStatus status, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalPrice) {
         this.userId = userId;
-        this.orderStatus = orderStatus;
+        this.status = status;
         this.orderedAt = orderedAt;
         this.totalAmount = totalAmount;
-        this.discountAmount = discountAmount;
-        this.finalPrice = finalPrice;
         this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
 
-        // 연관관계 설정
-//        for(OrderItem item : this.orderItemList) {
-//            item.assignOrder(this);
-//        }
     }
 
     // 주문 정보 생성 - createOrder
     public static Order create(Long userId ,List<OrderItem> items, Coupon coupon) {
-        long totalAmount = items.stream()
+        long totalPrice = items.stream()
                 .mapToLong(OrderItem::calculateAmount)
                 .sum();
 
-        long discountAmount = coupon != null ? coupon.calculateDiscountAmount() : 0L;
-        long finalPrice = Math.max(totalAmount - discountAmount, 0L);
-
         return Order.builder()
                 .userId(userId)
-                .orderStatus(OrderStatus.CREATED)
+                .status(OrderStatus.PAYMENT_WAITING)
                 .orderItemList(items)
                 .orderedAt(LocalDateTime.now())
-                .totalAmount(totalAmount)
-                .discountAmount(discountAmount)
-                .finalPrice(finalPrice)
+                .totalPrice(totalPrice)
                 .build();
     }
     
@@ -127,7 +99,7 @@ public class Order extends BaseEntity {
      주문 상태 변경을 하는 행위에 대해서는 주문 도메인이 알고 있어야 할 것이고,
      다른 도메인들은 주문 상태를 변경만 하면 되기때문에..!*/
     public void updateOrderStatus(OrderStatus newOrderStatus) {
-        this.orderStatus = newOrderStatus;
+        this.status = newOrderStatus;
     }
 
     public List<OrderItem> getOrderItemList() {

@@ -3,6 +3,7 @@ package kr.hhplus.be.server.application.order;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.user.UserCouponCommand;
+import kr.hhplus.be.server.presentation.order.OrderRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,12 @@ public class OrderCriteria {
             return new Order(userId, items, userCouponId);
         }
 
+        public static Order fromRequest(OrderRequest.Order orderRequest) {
+            List<OrderItem> items = orderRequest.getOrderItemList().stream().map(OrderRequest.OrderItem::toCriteria)
+                    .toList();
+            return new Order(orderRequest.getUserId(), items, orderRequest.getUserCouponId());
+        }
+
         public OrderCommand.OrderItems toOrderItemCommand() {
             return OrderCommand.OrderItems.of(
                     items.stream()
@@ -50,6 +57,7 @@ public class OrderCriteria {
         public UserCouponCommand.UsableCoupon toUsableCouponCommand(Long userId, Long userCouponId) {
             return UserCouponCommand.UsableCoupon.of(userId, userCouponId);
         }
+
     }
 
     @Getter
