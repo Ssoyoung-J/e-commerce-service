@@ -1,27 +1,22 @@
 package kr.hhplus.be.server.presentation.order;
 
 import kr.hhplus.be.server.application.order.OrderResult;
+import kr.hhplus.be.server.domain.order.Order;
 
 public record OrderResponse() {
 
-    public record Order(
+    public record OrderInfo(
             Long orderId,
-
             Long userId,
-
             Order.OrderStatus status,
-            Long totalAmount,
-            Long discountAmount,
-            Long finalPrice
+            Long totalAmount
     ) {
-        public static Order from(OrderResult.Order order) {
-            return new Order(
+        public static OrderInfo from(OrderResult.OrderDetails order) {
+            return new OrderInfo(
                     order.getOrderId(),
                     order.getUserId(),
                     order.getStatus(),
-                    order.getTotalAmount(),
-                    order.getDiscountAmount(),
-                    order.getFinalPrice()
+                    order.getTotalAmount()
             );
         }
     }

@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.BaseEntity;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.payment.Payment;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +13,9 @@ import java.util.List;
 import static java.lang.Long.sum;
 
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Order extends BaseEntity {
 
@@ -69,31 +69,47 @@ public class Order extends BaseEntity {
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
+    /**
+     * 할인 금액
+     * */
+    @Column(name = "discount_amount", nullable = false)
+    private Long discountAmount = 0L;
 
-    @Builder
-    public Order(Long userId, OrderStatus status, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalPrice) {
-        this.userId = userId;
-        this.status = status;
-        this.orderedAt = orderedAt;
-        this.totalAmount = totalAmount;
-        this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
+    /**
+     * 최종 결제 금액
+     * */
+    @Column(name = "final_price", nullable = false)
+    private Long finalPrice;
 
-    }
+
+//    @Builder
+//    public Order(Long orderId, Long userId, OrderStatus status, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount) {
+//        this.orderId = orderId;
+//        this.userId = userId;
+//        this.status = status;
+//        this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
+//        this.orderedAt = orderedAt;
+//        this.totalAmount = totalAmount;
+//        this.discountAmount = discountAmount;
+//        this.finalPrice = totalAmount - discountAmount;
+//
+//    }
 
     // 주문 정보 생성 - createOrder
-    public static Order create(Long userId ,List<OrderItem> items, Coupon coupon) {
-        long totalPrice = items.stream()
-                .mapToLong(OrderItem::calculateAmount)
-                .sum();
-
-        return Order.builder()
-                .userId(userId)
-                .status(OrderStatus.PAYMENT_WAITING)
-                .orderItemList(items)
-                .orderedAt(LocalDateTime.now())
-                .totalPrice(totalPrice)
-                .build();
-    }
+//    public static Order create(Long userId ,List<OrderItem> items) {
+//        long totalAmount = items.stream()
+//                .mapToLong(OrderItem::calculateAmount)
+//                .sum();
+//
+//        return Order.builder()
+//                .userId(userId)
+//                .status(OrderStatus.PAYMENT_WAITING)
+//                .orderItemList(items)
+//                .orderedAt(LocalDateTime.now())
+//                .totalAmount(totalAmount)
+//                .discountAmount(0L)
+//                .build();
+//    }
     
 /*   주문 상태 변경 - updateOrderStatus
      주문 상태 변경을 하는 행위에 대해서는 주문 도메인이 알고 있어야 할 것이고,
@@ -106,9 +122,8 @@ public class Order extends BaseEntity {
         return orderItemList;
     }
 
-    // Order Entity에서 OrderItem Entity의 메소드를 호출하는 형태
-    public Long calculateTotalAmount() {
-        return orderItemList.stream()
+    public static Long calculateTotalAmount(List<OrderItem> items) {
+        return items.stream()
                 .mapToLong(OrderItem::calculateAmount)
                 .sum();
     }

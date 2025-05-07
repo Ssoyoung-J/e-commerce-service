@@ -14,26 +14,26 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderCriteria {
     @Getter
-    public static class Order {
+    public static class Create {
         private final Long userId;
         private final List<OrderItem> items;
         private final Long userCouponId;
 
         @Builder
-        private Order(Long userId, List<OrderItem> items, Long userCouponId) {
+        private Create(Long userId, List<OrderItem> items, Long userCouponId) {
             this.userId = userId;
             this.items = items;
             this.userCouponId = userCouponId;
         }
 
-        public static Order of(Long userId, List<OrderItem> items, Long userCouponId) {
-            return new Order(userId, items, userCouponId);
+        public static Create of(Long userId, List<OrderItem> items, Long userCouponId) {
+            return new Create(userId, items, userCouponId);
         }
 
-        public static Order fromRequest(OrderRequest.Order orderRequest) {
+        public static Create fromRequest(OrderRequest.Order orderRequest) {
             List<OrderItem> items = orderRequest.getOrderItemList().stream().map(OrderRequest.OrderItem::toCriteria)
                     .toList();
-            return new Order(orderRequest.getUserId(), items, orderRequest.getUserCouponId());
+            return new Create(orderRequest.getUserId(), items, orderRequest.getUserCouponId());
         }
 
         public OrderCommand.OrderItems toOrderItemCommand() {
@@ -45,13 +45,13 @@ public class OrderCriteria {
             );
         }
 
-        public OrderCommand.Order toOrderCommand(Long userId, List<OrderCommand.OrderItem> orderItems, Long userCouponId) {
+        public OrderCommand.Create toOrderCommand(Long userId, List<OrderCommand.OrderItem> orderItems) {
             List<OrderCommand.OrderItem> items = orderItems.stream()
                     .map(o -> OrderCommand.OrderItem.builder()
                             .productId(o.getProductId()).productQuantity(o.getProductQuantity()).productPrice(o.getProductPrice())
                             .build()).toList();
 
-            return OrderCommand.Order.of(userId, items, userCouponId);
+            return OrderCommand.Create.of(userId, items);
         }
 
         public UserCouponCommand.UsableCoupon toUsableCouponCommand(Long userId, Long userCouponId) {
@@ -64,18 +64,18 @@ public class OrderCriteria {
     public static class OrderItem {
         private final Long productId;
         private final Long productDetailId;
-        private final Long productQuantity;
+        private final int productQuantity;
         private final Long productPrice;
 
         @Builder
-        private OrderItem(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+        private OrderItem(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
             this.productId = productId;
             this.productDetailId = productDetailId;
             this.productQuantity = productQuantity;
             this.productPrice = productPrice;
         }
 
-        public static OrderItem of(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+        public static OrderItem of(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
             return new OrderItem(productId, productDetailId, productQuantity, productPrice);
         }
     }

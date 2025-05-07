@@ -18,9 +18,9 @@ public class OrderController {
    private final OrderFacade orderFacade;
 
     @PostMapping("/api/orders")
-    public OrderResponse.Order order(@RequestBody OrderRequest.Order request) {
-        OrderCriteria.Order orderRequest = OrderCriteria.Order.fromRequest(request);
-        OrderResult.Order result = orderFacade.order(orderRequest);
-        return OrderResponse.Order.from(result);
+    public OrderResponse.OrderInfo order(@RequestBody OrderRequest.Order request) {
+        OrderCriteria.Create orderRequest = OrderCriteria.Create.fromRequest(request);
+        OrderResult.OrderDetails result = orderFacade.order(orderRequest);
+        return OrderResponse.OrderInfo.from(result);
     }
 }

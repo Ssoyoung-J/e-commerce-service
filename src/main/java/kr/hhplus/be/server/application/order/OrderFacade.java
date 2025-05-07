@@ -29,7 +29,7 @@ public class OrderFacade {
      * 주문
      *
      * */
-    public OrderResult.Order order(OrderCriteria.Order criteria) {
+    public OrderResult.OrderDetails order(OrderCriteria.Create criteria) {
         userService.getUser(criteria.getUserId());
 
         // 주문 상품 생성
@@ -42,7 +42,7 @@ public class OrderFacade {
         Long userCouponId = userCouponService.getUsableCoupon(criteria.toUsableCouponCommand(criteria.getUserId(), criteria.getUserCouponId())).getUserCouponId();
 
         // 주문 정보 생성
-        OrderInfo.Order order = orderService.createOrder(criteria.toOrderCommand(criteria.getUserId(), orderItemList, userCouponId));
+        OrderInfo.OrderDetails order = orderService.createOrder(criteria.toOrderCommand(criteria.getUserId(), orderItemList));
 
         try {
             availableItems.forEach(item -> {
@@ -59,7 +59,7 @@ public class OrderFacade {
 
         orderService.waitingForPay(order.getOrderId());
 
-        return OrderResult.Order.of(order);
+        return OrderResult.OrderDetails.from(order);
     }
 
 
