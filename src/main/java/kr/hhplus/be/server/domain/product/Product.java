@@ -33,13 +33,6 @@ public class Product extends BaseEntity {
         this.productName = productName;
     }
 
-    // 상품 생성 시 양방향 관계 유지를 위한 상품 옵션 추가
-    public void addDetails(List<ProductDetail> details) {
-        for(ProductDetail detail : details) {
-            this.details.add(detail);
-            detail.setProduct(this);
-        }
-    }
 
     public static Product create(Long productId, String brand, String productName) {
         return Product.builder()
@@ -49,7 +42,7 @@ public class Product extends BaseEntity {
                 .build();
     }
 
-    public void decreaseStock(Long detailId, Long quantity) {
+    public void decreaseStock(Long detailId, int quantity) {
         ProductDetail detail = details.stream()
                 .filter(d -> d.getProductDetailId().equals(detailId))
                 .findFirst()

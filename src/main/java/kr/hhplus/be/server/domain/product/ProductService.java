@@ -6,7 +6,9 @@ import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,6 +92,11 @@ public class ProductService {
         }
 
     }
+
+//    @Transactional(readOnly = true)
+//    public List<ProductInfo.BestSelling> getBestSellingProducts(LocalDateTime days, long limit) {
+//
+//    }
 
 
 

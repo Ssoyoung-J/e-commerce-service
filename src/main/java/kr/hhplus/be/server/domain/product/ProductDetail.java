@@ -21,18 +21,18 @@ public class ProductDetail extends BaseEntity {
 
     private Long productPrice;
 
-    private Long stockQuantity;
+    private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Builder
-    public ProductDetail(Long productDetailId, String  optionName, Long productPrice, Long stockQuantity, Product product) {
+    public ProductDetail(Long productDetailId, String  optionName, Long productPrice, int quantity, Product product) {
         this.productDetailId = productDetailId;
         this.optionName = optionName;
         this.productPrice = productPrice;
-        this.stockQuantity = stockQuantity;
+        this.quantity = quantity;
         this.product = product;
     }
 
@@ -41,16 +41,16 @@ public class ProductDetail extends BaseEntity {
     }
 
     // 재고 확인
-    public boolean hasSufficientStock(Long quantity) {
-        if(this.stockQuantity < quantity) {
+    public boolean hasSufficientStock(int productQuantity) {
+        if(this.quantity < productQuantity) {
             throw new IllegalArgumentException("해당 상품 재고가 부족합니다.");
         }
-        return this.stockQuantity >= quantity;
+        return this.quantity >= productQuantity;
     }
 
    // 재고 차감
-   public void decreaseStock(Long quantity) {
-        this.stockQuantity -= quantity;
+   public void decreaseStock(int quantity) {
+        this.quantity -= quantity;
    }
 
 

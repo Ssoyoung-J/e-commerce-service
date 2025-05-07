@@ -108,7 +108,7 @@ class ProductServiceTest {
                             .productDetailId(1L)
                             .optionName("검정색")
                             .productPrice(100000L)
-                            .stockQuantity(10L)
+                            .quantity(10)
                             .product(product1)
                             .build()
             );
@@ -132,11 +132,11 @@ class ProductServiceTest {
         @Test
         void checkProductStock() {
             // given
-            ProductCommand.FindDetail command1 = new ProductCommand.FindDetail(10L, 11000L);
-            ProductCommand.FindDetail command2 = new ProductCommand.FindDetail(10L, 5L);
+            ProductCommand.FindDetail command1 = new ProductCommand.FindDetail(10L, 11);
+            ProductCommand.FindDetail command2 = new ProductCommand.FindDetail(10L, 5);
 
             ProductDetail detail = ProductDetail.builder()
-                    .productDetailId(10L).stockQuantity(10L).build();
+                    .productDetailId(10L).quantity(10).build();
             when(detailRepository.findById(command1.getProductDetailId())).thenReturn(detail);
 
             // when
@@ -155,12 +155,12 @@ class ProductServiceTest {
         void decreascStockSuccess() {
             // given
             Long productDetailId = 1L;
-            Long stockQuantity = 200L;
-            Long requiredQuantity = 170L;
+            int stockQuantity = 200;
+            int requiredQuantity = 170;
 
             ProductDetail detail = ProductDetail.builder()
                     .productDetailId(productDetailId)
-                    .stockQuantity(stockQuantity)
+                    .quantity(stockQuantity)
                     .build();
 
             when(detailRepository.findById(productDetailId)).thenReturn(detail);
@@ -171,7 +171,7 @@ class ProductServiceTest {
             productService.decreaseStock(command);
 
             // then
-            assertThat(detail.getStockQuantity()).isEqualTo(stockQuantity - requiredQuantity);
+            assertThat(detail.getQuantity()).isEqualTo(stockQuantity - requiredQuantity);
 
         }
     }

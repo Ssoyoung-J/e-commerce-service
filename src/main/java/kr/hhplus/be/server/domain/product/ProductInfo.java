@@ -46,7 +46,7 @@ public class ProductInfo {
 
         public static ProductInfoList of(Product product, List<ProductDetail> details) {
             return new ProductInfoList(product.getProductId(), product.getBrand(), product.getProductName(), details.stream().map(d ->
-                    new ProductDetail(d.getProductDetailId(), d.getOptionName(), d.getProductPrice(), d.getStockQuantity(), d.getProduct())).toList());
+                    new ProductDetail(d.getProductDetailId(), d.getOptionName(), d.getProductPrice(), d.getQuantity(), d.getProduct())).toList());
         }
     }
 
@@ -64,6 +64,15 @@ public class ProductInfo {
         public static CheckedProductStock of (Long productDetailId, Long stockQuantity) {
             return new CheckedProductStock(productDetailId, stockQuantity);
         }
+    }
+
+
+    @Getter
+    @Builder
+    public static class BestSelling {
+        private final long productId;
+        private final String productName;
+        private final long salesCount;
     }
 
 }

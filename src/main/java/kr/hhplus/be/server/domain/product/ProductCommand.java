@@ -26,15 +26,15 @@ public class ProductCommand {
     @Getter
     public static class FindDetail {
         private final Long productDetailId;
-        private final Long requiredQuantity;
+        private final int requiredQuantity;
 
         @Builder
-        public FindDetail(Long productDetailId, Long requiredQuantity) {
+        public FindDetail(Long productDetailId, int requiredQuantity) {
             this.productDetailId = productDetailId;
             this.requiredQuantity = requiredQuantity;
         }
 
-        public static FindDetail of(Long productDetailId, Long requiredQuantity) {
+        public static FindDetail of(Long productDetailId, int requiredQuantity) {
             return FindDetail.builder()
                     .productDetailId(productDetailId)
                     .requiredQuantity(requiredQuantity)
