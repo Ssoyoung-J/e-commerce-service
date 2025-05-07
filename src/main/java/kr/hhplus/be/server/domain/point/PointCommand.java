@@ -18,7 +18,7 @@ public class PointCommand {
             this.pointAmount = pointAmount;
         }
 
-        public static Point of(Long userId,Long balance, Long pointAmount) {
+        public static Point of(Long userId, Long balance, Long pointAmount) {
             return Point.builder()
                     .userId(userId)
                     .balance(balance)
