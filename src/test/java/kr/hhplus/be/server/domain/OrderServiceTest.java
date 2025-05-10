@@ -10,18 +10,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * Order Service 단위 테스트
  * */
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-//    @Mock
-//    private OrderRepository orderJpaRepository;
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -33,19 +36,30 @@ class OrderServiceTest {
         @Test
         void createOrder() {
             // given
-            OrderCommand.Order command = OrderCommand.Order.of(
-                    1L,
+            long userId = 1L;
+            OrderCommand.Create command = OrderCommand.Create.of(
+                    userId,
                     List.of(
-                            OrderCommand.OrderItem.of(1L, 1L, 20L, 2000L)
-                    ),
-                    1L
+                            OrderCommand.OrderItem.of(1L, 1L, 20, 2000L)
+                    )
             );
 
+            Order order = Order.builder()
+                    .orderId(1L)
+                    .userId(userId)
+                    .orderedAt(LocalDateTime.now())
+                    .status(Order.OrderStatus.PAYMENT_WAITING)
+                    .totalAmount(40000L)
+                    .build();
+
+            when(orderRepository.save(any(Order.class))).thenReturn(order);
+
             // when
-            OrderInfo.Order order = orderService.createOrder(command);
+            OrderInfo.OrderDetails result = orderService.createOrder(command);
 
             // then
-            assertThat(order.getFinalPrice()).isEqualTo(40000L);
+            assertThat(result.getOrderId()).isEqualTo(order.getOrderId());
+            assertThat(result.getTotalAmount()).isEqualTo(40000L);
         }
     }
 }

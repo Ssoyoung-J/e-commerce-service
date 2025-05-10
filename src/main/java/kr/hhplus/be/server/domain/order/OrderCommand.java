@@ -11,23 +11,20 @@ import java.util.List;
 public class OrderCommand {
 
     @Getter
-    public static class Order {
+    public static class Create {
         private final Long userId;
         private final List<OrderItem> orderItems;
-        private final Long userCouponId;
 
         @Builder
-        private Order(Long userId, List<OrderItem> orderItems, Long userCouponId) {
+        private Create(Long userId, List<OrderItem> orderItems) {
             this.userId = userId;
             this.orderItems = orderItems;
-            this.userCouponId = userCouponId;
         }
 
-        public static Order of(Long userId, List<OrderItem> orderItems, Long userCouponId) {
-            return Order.builder()
+        public static Create of(Long userId, List<OrderItem> orderItems) {
+            return Create.builder()
                     .userId(userId)
                     .orderItems(orderItems)
-                    .userCouponId(userCouponId)
                     .build();
         }
     }
@@ -36,18 +33,18 @@ public class OrderCommand {
     public static class OrderItem {
         private final Long productId;
         private final Long productDetailId;
-        private final Long productQuantity;
+        private final int productQuantity;
         private final Long productPrice;
 
         @Builder
-        private OrderItem(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+        private OrderItem(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
             this.productId = productId;
             this.productDetailId = productDetailId;
             this.productQuantity = productQuantity;
             this.productPrice = productPrice;
         }
 
-        public static OrderItem of(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+        public static OrderItem of(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
             return OrderItem.builder()
                     .productId(productId)
                     .productDetailId(productDetailId)

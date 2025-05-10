@@ -13,40 +13,49 @@ import java.util.List;
 public class ProductInfo {
 
     @Getter
-    public static class ProductList {
+    @Builder
+    public static class ProductDetail {
+        private long productId;
+        private String productName;
+        private String brand;
+        private List<ProductOptionDetail> details;
 
-        private final List<ProductInfoList> products;
-
-        @Builder
-        public ProductList(List<ProductInfoList> products) {
-            this.products = products;
-        }
-
-        public static ProductList of(List<ProductInfoList> products) {
-            return new ProductList(products);
+        public static ProductDetail from(Product product, List<ProductOptionDetail> details) {
+            return ProductDetail.builder()
+                    .productId(product.getProductId())
+                    .productName(product.getProductName())
+                    .brand(product.getBrand())
+                    .details(details)
+                    .build();
         }
     }
 
 
     @Getter
-    public static class ProductInfoList {
+    @Builder
+    public static class ProductOptionDetail {
+        private long productDetailId;
+        private String optionName;
+        private long productPrice;
+        private int stockQuantity;
+    }
 
-        private final Long productId;
-        private final String brand;
-        private final String productName;
-        private final List<ProductDetail> details;
+    @Getter
+    @Builder
+    public static class PriceOption {
+        private long productDetailId;
+        private long productPrice;
+        private int stockQuantiity;
+    }
 
-        @Builder
-        public ProductInfoList(Long productId, String brand, String productName, List<ProductDetail> details) {
-            this.productId = productId;
-            this.brand = brand;
-            this.productName = productName;
-            this.details = details;
-        }
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    public static class ProductSalesData {
+        private List<BestSelling> bestSellings;
 
-        public static ProductInfoList of(Product product, List<ProductDetail> details) {
-            return new ProductInfoList(product.getProductId(), product.getBrand(), product.getProductName(), details.stream().map(d ->
-                    new ProductDetail(d.getProductDetailId(), d.getOptionName(), d.getProductPrice(), d.getStockQuantity(), d.getProduct())).toList());
+        public ProductSalesData(List<BestSelling> bestSellings) {
+            this.bestSellings = bestSellings;
         }
     }
 
@@ -63,6 +72,43 @@ public class ProductInfo {
 
         public static CheckedProductStock of (Long productDetailId, Long stockQuantity) {
             return new CheckedProductStock(productDetailId, stockQuantity);
+        }
+    }
+
+
+    @Getter
+    @Builder
+    public static class BestSelling {
+        private final long productId;
+        private final String productName;
+        private final long salesCount;
+
+        public BestSelling(long productId, String productName, long salesCount) {
+            this.productId = productId;
+            this.productName = productName;
+            this.salesCount = salesCount;
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class DecreaseStock {
+        private List<ProductOptionStock> optionStocks;
+    }
+
+    @Getter
+    @Builder
+    public static class ProductOptionStock {
+        private long productDetailId;
+        private long stockId;
+        private int quantity;
+
+        public static ProductOptionStock from(Stock stock) {
+            return ProductOptionStock.builder()
+                    .productDetailId(stock.getProductDetailId())
+                    .stockId(stock.getStockId())
+                    .quantity(stock.getQuantity())
+                    .build();
         }
     }
 

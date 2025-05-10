@@ -34,8 +34,8 @@ public class OrderRequest {
             return new Order(userId, userCouponId, orderItemList);
         }
 
-        public OrderCriteria.Order toCriteria() {
-            return OrderCriteria.Order.of(userId, orderItemList.stream()
+        public OrderCriteria.Create toCriteria() {
+            return OrderCriteria.Create.of(userId, orderItemList.stream()
                     .map(OrderItem::toCriteria)
                     .toList(), userCouponId);
         }
@@ -51,19 +51,19 @@ public class OrderRequest {
         private Long productDetailId;
 
         @NotNull(message = "상품 구매 수량은 필수입니다.")
-        private Long productQuantity;
+        private int productQuantity;
 
         @NotNull(message = "상품 가격은 필수입니다.")
         private Long productPrice;
 
-        private OrderItem(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+        private OrderItem(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
             this.productId = productId;
             this.productDetailId = productDetailId;
             this.productQuantity = productQuantity;
             this.productPrice = productPrice;
         }
 
-        public static OrderItem of(Long productId, Long productDetailId, Long productQuantity, Long productPrice) {
+        public static OrderItem of(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
             return new OrderItem(productId, productDetailId, productQuantity, productPrice);
         }
 

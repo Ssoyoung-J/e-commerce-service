@@ -27,7 +27,7 @@ class PaymentServiceTest {
     @Nested
     class paymentTest {
 
-        @DisplayName("결제 성공")
+        @DisplayName("결제 성공 - 올바른 주문 ID, 0보다 큰 결제 금액")
         @Test
         void paySuccess() {
             // given
@@ -47,11 +47,13 @@ class PaymentServiceTest {
             PaymentInfo.Payment result = paymentService.pay(command);
 
             // then
+            assertThat(result).isNotNull();
             assertThat(result.getPaymentId()).isEqualTo(1L);
+            assertThat(result.getOrderId()).isEqualTo(orderId);
             verify(paymentRepository, times(1)).save(any(Payment.class));
         }
 
-        @DisplayName("결제 실패")
+        @DisplayName("결제 실패 - 결제 상태: 결제 취소")
         @Test
         void payCanceled() {
             // given
