@@ -1,9 +1,7 @@
 package kr.hhplus.be.server.application.order;
 
 import kr.hhplus.be.server.domain.order.OrderCommand;
-import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.product.ProductCommand;
-import kr.hhplus.be.server.domain.user.UserCouponCommand;
 import kr.hhplus.be.server.presentation.order.OrderRequest;
 import lombok.AccessLevel;
 import lombok.Builder;

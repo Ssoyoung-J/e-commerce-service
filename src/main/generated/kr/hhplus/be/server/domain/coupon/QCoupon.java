@@ -38,7 +38,7 @@ public class QCoupon extends EntityPathBase<Coupon> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final ListPath<kr.hhplus.be.server.domain.user.UserCoupon, kr.hhplus.be.server.domain.user.QUserCoupon> userCoupons = this.<kr.hhplus.be.server.domain.user.UserCoupon, kr.hhplus.be.server.domain.user.QUserCoupon>createList("userCoupons", kr.hhplus.be.server.domain.user.UserCoupon.class, kr.hhplus.be.server.domain.user.QUserCoupon.class, PathInits.DIRECT2);
+    public final ListPath<UserCoupon, kr.hhplus.be.server.domain.user.QUserCoupon> userCoupons = this.<UserCoupon, kr.hhplus.be.server.domain.user.QUserCoupon>createList("userCoupons", UserCoupon.class, kr.hhplus.be.server.domain.user.QUserCoupon.class, PathInits.DIRECT2);
 
     public QCoupon(String variable) {
         super(Coupon.class, forVariable(variable));

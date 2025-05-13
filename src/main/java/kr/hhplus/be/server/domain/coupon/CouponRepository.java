@@ -10,4 +10,12 @@ public interface CouponRepository {
     // 쿠폰 조회
     Coupon findById(Long couponId);
 
+    // 쿠폰 조회(비관적 락)
+    Optional<Coupon> findByIdForUpdate(Long couponId);
+
+    // 쿠폰 중복 발급 체크
+    boolean existsByUserIdAndCouponId(Long userId, Long couponId);
+
+    //  사용자 쿠폰 정보 저장
+    UserCoupon saveUserCoupon(UserCoupon userCoupon);
 }
