@@ -32,12 +32,12 @@ public class UserCouponService {
         userCoupon.use();
     }
     
-    public UserCouponInfo.Coupons getUserCoupons(Long userId) {
+    public List<UserCouponInfo.Coupon> getUserCoupons(Long userId) {
         List<UserCoupon> coupons = userCouponRepository.findByUserId(userId);
 
-        return UserCouponInfo.Coupons.of(coupons.stream()
+        return coupons.stream()
                 .map(UserCouponService::toCouponInfo)
-                .toList());
+                .toList();
     }
 
     private static UserCouponInfo.Coupon toCouponInfo(UserCoupon userCoupon) {

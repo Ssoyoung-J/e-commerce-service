@@ -17,7 +17,7 @@ public class ProductCommand {
     public static class ProductDetailIds {
         private List<Long> productDetailIds;
 
-        private static ProductDetailIds of(List<Long> productDetailIds) {
+        public static ProductDetailIds of(List<Long> productDetailIds) {
             return ProductDetailIds.builder()
                     .productDetailIds(productDetailIds)
                     .build();}

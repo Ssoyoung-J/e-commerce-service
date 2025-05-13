@@ -6,7 +6,9 @@ import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductCommand;
+import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
+import kr.hhplus.be.server.domain.user.UserCouponInfo;
 import kr.hhplus.be.server.domain.user.UserCouponService;
 import kr.hhplus.be.server.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +34,18 @@ public class OrderFacade {
     public OrderResult.OrderDetails order(OrderCriteria.Create criteria) {
         userService.getUser(criteria.getUserId());
 
-        // 주문 상품 생성
         List<OrderCommand.OrderItem> orderItemList = criteria.toOrderItemCommand().getOrderItems();
+
+        // 주문 상품 옵션 ID
+        List<Long> orderItemIds = orderItemList.stream()
+                .map(item -> item.getProductDetailId())
+                .toList();
+
+        // 옵션 ID 기반 상품 가격 정보 조회
+        List<ProductInfo.PriceOption> productDetails = productService.getOptionsById(criteria.toProductDetailIdsCommand(orderItemIds));
+
+        // 사용자 쿠폰 정보 조회
+        List<UserCouponInfo.Coupons> userCouponList = userCouponService.getUserCoupons(criteria.getUserId());
 
         // 주문 상품의 재고 파악을 위해 주문 상품마다 재고 조회
         List<OrderCommand.OrderItem> availableItems = productService.filterAvailableItems(orderItemList);

@@ -2,6 +2,7 @@ package kr.hhplus.be.server.application.order;
 
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.order.OrderItem;
+import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.user.UserCouponCommand;
 import kr.hhplus.be.server.presentation.order.OrderRequest;
 import lombok.AccessLevel;
@@ -56,6 +57,10 @@ public class OrderCriteria {
 
         public UserCouponCommand.UsableCoupon toUsableCouponCommand(Long userId, Long userCouponId) {
             return UserCouponCommand.UsableCoupon.of(userId, userCouponId);
+        }
+
+        public ProductCommand.ProductDetailIds toProductDetailIdsCommand(List<Long> productDetailIds) {
+            return ProductCommand.ProductDetailIds.of(productDetailIds);
         }
 
     }
