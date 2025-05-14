@@ -21,7 +21,7 @@ public final class CouponInfo {
 
         public static IssuedCoupon from(UserCoupon userCoupon, Coupon coupon) {
             return IssuedCoupon.builder()
-                    .userCouponId(userCoupon.getCouponId())
+                    .userCouponId(userCoupon.getUserCouponId())
                     .couponId(coupon.getCouponId())
                     .couponName(coupon.getCouponName())
                     .discount(coupon.getDiscount())

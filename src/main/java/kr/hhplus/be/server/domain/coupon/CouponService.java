@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,9 +41,28 @@ public class CouponService {
 
         // 사용자 쿠폰 생성
         UserCoupon savedUserCoupon = couponRepository.saveUserCoupon(command.toEntity());
-
         return CouponInfo.IssuedCoupon.from(savedUserCoupon, coupon);
     }
 
+    // 사용자 보유 쿠폰 목록 조회
+    @Transactional(readOnly = true)
+    public List<CouponInfo.UserOwnedCoupon> getUserCoupons(long userId) {
+        return couponRepository.findAllOwnedCouponsByUserId(userId).stream()
+                .map(CouponQuery.UserOwnedCoupon::to)
+                .toList();
+    }
 
+    // 사용자 쿠폰 사용
+    @Transactional
+    public void use(CouponCommand.CouponAction command) {
+        // 사용하려는 쿠폰 ID 추출 (중복 제거)
+        List<Long> userCouponIds = command.getUserOwnedCoupons()
+                .stream()
+                .map(CouponCommand.UserOwnedCoupon::getUserCouponId)
+                .distinct()
+                .toList();
+
+        // 쿠폰 상세 정보 조회
+        List<CouponInfo.UserOwnedCoupon> details = couponRepository.
+    }
 }

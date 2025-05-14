@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
 
 
 /**
@@ -35,7 +34,7 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final ListPath<UserCoupon, QUserCoupon> userCoupons = this.<UserCoupon, QUserCoupon>createList("userCoupons", UserCoupon.class, QUserCoupon.class, PathInits.DIRECT2);
+    public final ListPath<kr.hhplus.be.server.domain.coupon.UserCoupon, kr.hhplus.be.server.domain.coupon.QUserCoupon> userCoupons = this.<kr.hhplus.be.server.domain.coupon.UserCoupon, kr.hhplus.be.server.domain.coupon.QUserCoupon>createList("userCoupons", kr.hhplus.be.server.domain.coupon.UserCoupon.class, kr.hhplus.be.server.domain.coupon.QUserCoupon.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 

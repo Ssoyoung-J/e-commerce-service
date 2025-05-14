@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CouponRepository {
@@ -18,4 +19,7 @@ public interface CouponRepository {
 
     //  사용자 쿠폰 정보 저장
     UserCoupon saveUserCoupon(UserCoupon userCoupon);
+
+    // 사용자 쿠폰 목록 조회
+    List<CouponQuery.UserOwnedCoupon> findAllOwnedCouponsByUserId(long userId);
 }

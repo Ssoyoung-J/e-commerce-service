@@ -1,13 +1,16 @@
 package kr.hhplus.be.server.infrastructure.coupon;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponRepository;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+
+import static kr.hhplus.be.server.domain.coupon.QCoupon.coupon;
+import static kr.hhplus.be.server.domain.coupon.QUserCoupon.userCoupon;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,6 +18,7 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     private final CouponJpaRepository couponJpaRepository;
     private final UserCouponJpaRepository userCouponJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     // 쿠폰 저장
     @Override
@@ -46,6 +50,26 @@ public class CouponRepositoryImpl implements CouponRepository {
     @Override
     public UserCoupon saveUserCoupon(UserCoupon userCoupon) {
         return userCouponJpaRepository.save(userCoupon);
+    }
+
+    // 사용자 쿠폰 목록 조회
+    @Override
+    public List<CouponQuery.UserOwnedCoupon> findAllOwnedCouponsByUserId(long userId) {
+        return queryFactory
+                .select(new QCouponQuery_UserOwnedCoupon(
+                        userCoupon.userCouponId.as("userCouponId"),
+                        coupon.couponId.as("couponId"),
+                        userCoupon.userId.as("userId"),
+                        coupon.couponName,
+                        coupon.discount,
+                        coupon.expiredAt,
+                        userCoupon.userCouponStatus.as("userCouponStatus")
+                ))
+                .from(userCoupon)
+                .join(coupon)
+                .on(coupon.couponId.eq(userCoupon.couponId))
+                .where(userCoupon.userId.eq(userId))
+                .fetch();
     }
 
 

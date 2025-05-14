@@ -64,6 +64,7 @@ class CouponServiceTest {
             CouponInfo.IssuedCoupon result = couponService.publishCoupon(command);
 
             // then
+            assertThat(coupon.getQuantity()).isEqualTo(4L);
             assertThat(result.getUserCouponId()).isEqualTo(userCoupon.getUserCouponId());
             assertThat(result.getCouponId()).isEqualTo(coupon.getCouponId());
             assertThat(result.getCouponName()).isEqualTo(coupon.getCouponName());
