@@ -29,7 +29,7 @@ public class CouponService {
         }
 
         // 쿠폰 중복 발급 체크
-        boolean isIssued = couponRepository.existsByUserIdAndCouponId(command.getUserId(), command.couponId);
+        boolean isIssued = couponRepository.existsByUserIdAndCouponId(command.getUserId(), command.getCouponId());
 
         if(isIssued) {
             throw new BusinessException(400, "이미 발급된 쿠폰입니다.");
@@ -44,9 +44,5 @@ public class CouponService {
         return CouponInfo.IssuedCoupon.from(savedUserCoupon, coupon);
     }
 
-    public Coupon getCoupon(Long couponId) {
-        Coupon coupon = couponRepository.findById(couponId);
-        return Coupon.create(coupon.getDiscountAmount(),coupon.getQuantity(), coupon.getStatus(), coupon.getExpiredAt());
-    }
 
 }
