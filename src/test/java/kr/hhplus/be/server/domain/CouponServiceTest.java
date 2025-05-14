@@ -1,8 +1,10 @@
 package kr.hhplus.be.server.domain;
 
+import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.domain.coupon.*;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductService;
+import org.hibernate.usertype.BaseUserTypeSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -27,11 +30,12 @@ class CouponServiceTest {
     private CouponService couponService;
 
     @Nested
+    @DisplayName("사용자 쿠폰 발급")
     class couponTest {
 
-        @DisplayName("사용자 쿠폰 발급")
+        @DisplayName("정상적으로 사용자에게 쿠폰 발급")
         @Test
-        void publishCoupon() {
+        void successfullyPublishCouponToUser() {
             // given
             long userId = 1L;
             long couponId = 10L;
@@ -69,5 +73,25 @@ class CouponServiceTest {
             assertThat(result.getCouponId()).isEqualTo(coupon.getCouponId());
             assertThat(result.getCouponName()).isEqualTo(coupon.getCouponName());
         }
+    }
+
+    @DisplayName("쿠폰이 존재하지 않을 경우 예외 발생")
+    @Test
+    void throwsExceptionWhenCouponDoesNotExist() {
+        // given
+        long userId = 1L;
+        long couponId = 10L;
+
+        CouponCommand.IssuedCoupon command = CouponCommand.IssuedCoupon.builder()
+                .userId(userId)
+                .couponId(couponId)
+                .build();
+
+        when(couponRepository.findByIdForUpdate(command.getCouponId())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> couponService.publishCoupon(command))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("해당 쿠폰을 조회할 수 없습니다.");
     }
 }
