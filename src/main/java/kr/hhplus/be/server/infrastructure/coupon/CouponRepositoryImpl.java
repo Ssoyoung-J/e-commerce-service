@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.coupon.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,12 @@ public class CouponRepositoryImpl implements CouponRepository {
                 .orElseThrow(() -> new EntityNotFoundException("쿠폰이 존재하지 않습니다."));
     }
 
+    // 사용자 쿠폰 목록 조회
+    @Override
+    public List<UserCoupon> findUserCouponsById(List<Long> userCouponIds) {
+        return userCouponJpaRepository.findAllById(userCouponIds);
+    }
+
     // 쿠폰 조회(비관적 락)
     @Override
     public Optional<Coupon> findByIdForUpdate(Long couponId) {
@@ -46,24 +53,30 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     }
 
-    //  사용자 쿠폰 정보 저장
+    // 사용자 쿠폰 정보 저장
     @Override
     public UserCoupon saveUserCoupon(UserCoupon userCoupon) {
         return userCouponJpaRepository.save(userCoupon);
     }
 
-    // 사용자 쿠폰 목록 조회
+    // 사용자 쿠폰 정보 목록 저장
+    @Override
+    public List<UserCoupon> saveUserCoupons(List<UserCoupon> userCoupons) {
+        return userCouponJpaRepository.saveAll(userCoupons);
+    }
+
+    // 사용자 쿠폰 목록 조회 - 사용자 Id
     @Override
     public List<CouponQuery.UserOwnedCoupon> findAllOwnedCouponsByUserId(long userId) {
         return queryFactory
                 .select(new QCouponQuery_UserOwnedCoupon(
-                        userCoupon.userCouponId.as("userCouponId"),
-                        coupon.couponId.as("couponId"),
-                        userCoupon.userId.as("userId"),
+                        userCoupon.userCouponId,
+                        coupon.couponId,
+                        userCoupon.userId,
                         coupon.couponName,
                         coupon.discount,
                         coupon.expiredAt,
-                        userCoupon.userCouponStatus.as("userCouponStatus")
+                        userCoupon.userCouponStatus
                 ))
                 .from(userCoupon)
                 .join(coupon)
@@ -72,5 +85,32 @@ public class CouponRepositoryImpl implements CouponRepository {
                 .fetch();
     }
 
+    // 사용자 쿠폰 목록 조회 - 사용자 쿠폰 Id 목록
+    @Override
+    public List<CouponQuery.UserOwnedCoupon> findUserCouponsByIds(List<Long> userCouponIds) {
+        return queryFactory
+                .select(
+                        new QCouponQuery_UserOwnedCoupon(
+                                userCoupon.userCouponId,
+                                coupon.couponId,
+                                userCoupon.userId,
+                                coupon.couponName,
+                                coupon.discount,
+                                coupon.expiredAt,
+                                userCoupon.userCouponStatus
+                        ))
+                .from(userCoupon)
+                .join(coupon)
+                .on(coupon.couponId.eq(userCoupon.couponId))
+                .where(userCoupon.userCouponId.in(userCouponIds))
+                .fetch();
+    }
+
+
+    // 만료된 사용자 쿠폰 목록 조회
+    @Override
+    public List<UserCoupon> findExpiredUserCoupons(LocalDateTime expiredAt) {
+        return userCouponJpaRepository.findExpiredUserCoupons(expiredAt);
+    }
 
 }
