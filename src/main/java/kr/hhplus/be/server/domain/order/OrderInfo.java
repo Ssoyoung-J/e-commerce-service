@@ -1,38 +1,60 @@
 package kr.hhplus.be.server.domain.order;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderInfo {
 
     @Getter
-    public static class Order {
-        private final Long orderId;
-        private final Long userId;
-        private OrderStatus status;
-        private final Long totalAmount;
-        private final Long discountAmount;
-        private final Long finalPrice;
-        private final List<OrderItem> orderItemList;
+    @Builder
+    public static class OrderDetails {
+        private long orderId;
+        private long userId;
+        private LocalDateTime orderedAt;
+        private Order.OrderStatus status;
+        private long totalAmount;
+        private List<OrderItemDetails> orderItemList;
 
-        private Order(Long orderId, Long userId, OrderStatus status, Long totalAmount, Long discountAmount, Long finalPrice, List<OrderItem> orderItemList) {
-            this.orderId = orderId;
-            this.userId = userId;
-            this.status = status;
-            this.totalAmount = totalAmount;
-            this.discountAmount = discountAmount;
-            this.finalPrice = finalPrice;
-            this.orderItemList = orderItemList;
-        }
+        public static OrderDetails from(Order order, List<OrderItem> orderItemList) {
+            List<OrderItemDetails> items = orderItemList.stream()
+                    .map(OrderItemDetails::from)
+                    .collect(Collectors.toList());
 
-
-        public static Order of(Long orderId, Long userId, OrderStatus status, Long totalAmount, Long discountAmount, Long finalPrice, List<OrderItem> orderItemList) {
-            return new Order(orderId, userId, status, totalAmount, discountAmount, finalPrice, orderItemList);
+            return OrderDetails.builder()
+                    .orderId(order.getOrderId())
+                    .userId(order.getUserId())
+                    .orderedAt(order.getOrderedAt())
+                    .status(order.getStatus())
+                    .totalAmount(order.getTotalAmount())
+                    .build();
         }
     }
+
+    @Getter
+    @Builder
+    public static class OrderItemDetails {
+        private long productDetailId;
+        private long productPrice;
+        private int productQuantity;
+        private Long userCouponId;
+
+        public static OrderItemDetails from(OrderItem orderItem) {
+            return OrderItemDetails.builder()
+                    .productDetailId(orderItem.getProductDetailId())
+                    .productPrice(orderItem.getProductPrice())
+                    .productQuantity(orderItem.getProductQuantity())
+                    .userCouponId(orderItem.getUserCouponId())
+                    .build();
+        }
+    }
+
+
 
 }

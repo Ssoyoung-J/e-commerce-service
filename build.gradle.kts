@@ -39,6 +39,12 @@ dependencies {
 	compileOnly ("org.projectlombok:lombok")
 	annotationProcessor ("org.projectlombok:lombok")
 
+	// QueryDSL
+	implementation("com.querydsl:querydsl-jpa:${dependencyManagement.importedProperties["querydsl.version"]}:jakarta")
+	annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties["querydsl.version"]}:jakarta")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
 	// swagger
 	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
@@ -50,7 +56,11 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
+	testImplementation("com.redis:testcontainers-redis:2.2.2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// Redisson
+	implementation("org.redisson:redisson-spring-boot-starter:3.23.2")
 }
 
 tasks.withType<Test> {

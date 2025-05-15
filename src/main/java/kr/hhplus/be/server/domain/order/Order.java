@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.BaseEntity;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.payment.Payment;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +13,9 @@ import java.util.List;
 import static java.lang.Long.sum;
 
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Order extends BaseEntity {
 
@@ -30,13 +30,14 @@ public class Order extends BaseEntity {
     /**
      * 사용자 고유 ID
      * */
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
 
     /**
      * 사용자 쿠폰 고유 ID
      * */
+    @Column(name = "user_coupon_id", nullable = false)
     private Long userCouponId;
 
     /**
@@ -44,7 +45,11 @@ public class Order extends BaseEntity {
      * */
     @Enumerated(EnumType.STRING)
     @Column(name = "orderStatus", nullable = false)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
+
+    public enum OrderStatus {
+        PAYMENT_WAITING , PAID, CANCELED
+    }
 
     /**
      * 주문 항목 목록
@@ -61,82 +66,64 @@ public class Order extends BaseEntity {
     /**
      * 상품 총 금액
      * */
-    @Column(name = "totalAmount", nullable = false)
+    @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
     /**
      * 할인 금액
      * */
-    @Column(name = "discountAmount", nullable = false)
-    private Long discountAmount;
+    @Column(name = "discount_amount", nullable = false)
+    private Long discountAmount = 0L;
 
     /**
      * 최종 결제 금액
      * */
-    @Column(name = "finalPrice", nullable = false)
+    @Column(name = "final_price", nullable = false)
     private Long finalPrice;
 
-//    /**
-//     * 결제
-//     * */
-//    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private Payment payment;
 
-//    public void assignPayment(Payment payment) {
-//        this.payment = payment;
-//        payment.assignOrder(this);
+//    @Builder
+//    public Order(Long orderId, Long userId, OrderStatus status, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount) {
+//        this.orderId = orderId;
+//        this.userId = userId;
+//        this.status = status;
+//        this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
+//        this.orderedAt = orderedAt;
+//        this.totalAmount = totalAmount;
+//        this.discountAmount = discountAmount;
+//        this.finalPrice = totalAmount - discountAmount;
+//
 //    }
 
-    @Builder
-    public Order(Long userId, OrderStatus orderStatus, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount, Long finalPrice) {
-        this.userId = userId;
-        this.orderStatus = orderStatus;
-        this.orderedAt = orderedAt;
-        this.totalAmount = totalAmount;
-        this.discountAmount = discountAmount;
-        this.finalPrice = finalPrice;
-        this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
-
-        // 연관관계 설정
-//        for(OrderItem item : this.orderItemList) {
-//            item.assignOrder(this);
-//        }
-    }
-
     // 주문 정보 생성 - createOrder
-    public static Order create(Long userId ,List<OrderItem> items, Coupon coupon) {
-        long totalAmount = items.stream()
-                .mapToLong(OrderItem::calculateAmount)
-                .sum();
-
-        long discountAmount = coupon != null ? coupon.calculateDiscountAmount() : 0L;
-        long finalPrice = Math.max(totalAmount - discountAmount, 0L);
-
-        return Order.builder()
-                .userId(userId)
-                .orderStatus(OrderStatus.CREATED)
-                .orderItemList(items)
-                .orderedAt(LocalDateTime.now())
-                .totalAmount(totalAmount)
-                .discountAmount(discountAmount)
-                .finalPrice(finalPrice)
-                .build();
-    }
+//    public static Order create(Long userId ,List<OrderItem> items) {
+//        long totalAmount = items.stream()
+//                .mapToLong(OrderItem::calculateAmount)
+//                .sum();
+//
+//        return Order.builder()
+//                .userId(userId)
+//                .status(OrderStatus.PAYMENT_WAITING)
+//                .orderItemList(items)
+//                .orderedAt(LocalDateTime.now())
+//                .totalAmount(totalAmount)
+//                .discountAmount(0L)
+//                .build();
+//    }
     
 /*   주문 상태 변경 - updateOrderStatus
      주문 상태 변경을 하는 행위에 대해서는 주문 도메인이 알고 있어야 할 것이고,
      다른 도메인들은 주문 상태를 변경만 하면 되기때문에..!*/
     public void updateOrderStatus(OrderStatus newOrderStatus) {
-        this.orderStatus = newOrderStatus;
+        this.status = newOrderStatus;
     }
 
     public List<OrderItem> getOrderItemList() {
         return orderItemList;
     }
 
-    // Order Entity에서 OrderItem Entity의 메소드를 호출하는 형태
-    public Long calculateTotalAmount() {
-        return orderItemList.stream()
+    public static Long calculateTotalAmount(List<OrderItem> items) {
+        return items.stream()
                 .mapToLong(OrderItem::calculateAmount)
                 .sum();
     }

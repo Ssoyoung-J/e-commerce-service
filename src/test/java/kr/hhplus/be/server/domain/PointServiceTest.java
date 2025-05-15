@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain;
 
+import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.domain.point.*;
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointRepository;
@@ -12,10 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -31,29 +31,66 @@ class PointServiceTest {
     private PointHistoryRepository pointHistoryRepository;
 
     @InjectMocks
-    private PointService service;
+    private PointService pointService;
 
     @Nested
-    class pointChargeTest {
-        @DisplayName("충전 포인트가 0보다 클 경우 - 포인트 충전 성공")
+    @DisplayName("포인트 조회")
+    class pointCheckTest {
+        @DisplayName("포인트 조회 성공 - 유효한 사용자 ID")
         @Test
         void success() {
             // given
-            PointCommand command = mock(PointCommand.class);
-            Point userPoint = mock(Point.class);
+            Long userId = 1L;
+            Long balance = 2000L;
+            PointCommand.Balance command = PointCommand.Balance.of(userId);
+            Point userPoint = Point.builder()
+                            .userId(userId)
+                            .balance(balance)
+                            .build();
 
-            when(pointRepository.findByUserId(command.getUserId())).thenReturn(Optional.of(userPoint));
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
 
             // when
-            service.chargePoint(command);
+            pointService.getUserBalance(command);
 
             // then
-            verify(userPoint, times(1)).charge(command.getPointAmount());
+            verify(pointRepository, times(1)).findByUserId(command.getUserId());
+            assertThat(userPoint).isNotNull();
+            assertThat(userPoint.getUserId()).isEqualTo(userId);
+            assertThat(userPoint.getBalance()).isEqualTo(2000L);
+        }
+    }
+
+    @Nested
+    class pointChargeTest {
+        @DisplayName("포인트 충전 검증 성공 - 충전 포인트 >= 0")
+        @Test
+        void success() {
+            // given
+            Long userId = 1L;
+            Long balance = 10L;
+            Long pointAmount = 20L;
+
+            PointCommand.Transaction command = PointCommand.Transaction.of(userId, pointAmount);
+            Point userPoint = Point.builder()
+                            .userId(userId)
+                            .balance(balance)
+                            .pointAmount(pointAmount)
+                            .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
+
+            // when
+            pointService.chargePoint(command);
+
+            // then
+            verify(pointRepository, times(1)).findByUserId(command.getUserId());
             verify(pointRepository, times(0)).save(userPoint);
+            assertThat(userPoint.getBalance()).isEqualTo(30L);
 
         }
 
-        @DisplayName("충전 포인트가 음수일 경우 - 포인트 충전 실패")
+        @DisplayName("포인트 충전 검증 실패 - 충전 금액: 음수")
         @Test
         public void shouldChargeFail_whenNegativeAmount(){
             //  given
@@ -61,14 +98,19 @@ class PointServiceTest {
             long balance = 10L;
             long pointAmount = -20L;
 
-            PointCommand command = new PointCommand(userId, balance, pointAmount);
-            Point userPoint = Point.create(command.getUserId(), command.getBalance());
+            PointCommand.Transaction command = PointCommand.Transaction.of(userId, pointAmount);
 
-            when(pointRepository.findByUserId(command.getUserId())).thenReturn(Optional.of(userPoint));
+            Point userPoint = Point.builder()
+                    .userId(userId)
+                    .balance(balance)
+                    .pointAmount(pointAmount)
+                    .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
 
             // when & then
-            assertThatThrownBy(() -> service.chargePoint(command))
-                    .isInstanceOf(IllegalArgumentException.class)
+            assertThatThrownBy(() -> pointService.chargePoint(command))
+                    .isInstanceOf(BusinessException.class)
                     .hasMessage("충전 포인트는 0보다 작을 수 없습니다.");
 
         }
@@ -77,7 +119,7 @@ class PointServiceTest {
     @Nested
     class pointUseTest {
 
-        @DisplayName("사용 포인트가 보유 포인트보다 클 경우 - 포인트 사용 실패")
+        @DisplayName("포인트 사용 검증 실패 - 사용 포인트 > 보유 포인트")
         @Test
         public void shouldUseFail_WhenUserHasInSufficientPoints(){
 
@@ -86,16 +128,73 @@ class PointServiceTest {
             long balance = 100L;
             long pointAmount = 2000L;
 
-            PointCommand command = new PointCommand(userId, balance, pointAmount);
-            Point userPoint = Point.create(command.getUserId(), command.getBalance());
+            PointCommand.Point command = PointCommand.Point.of(userId, balance, pointAmount);
 
-            when(pointRepository.findByUserId(command.getUserId())).thenReturn(Optional.of(userPoint));
+            Point userPoint = Point.builder()
+                    .userId(userId)
+                    .balance(balance)
+                    .pointAmount(pointAmount)
+                    .build();
+
+            when(pointRepository.findByUserId(command.getUserId())).thenReturn(userPoint);
 
             // when & then
-            assertThatThrownBy(() -> service.usePoint(command))
-                    .isInstanceOf(IllegalArgumentException.class)
+            assertThatThrownBy(() -> pointService.usePoint(command))
+                    .isInstanceOf(BusinessException.class)
                     .hasMessage("사용 포인트는 보유 포인트보다 클 수 없습니다.");
 
+        }
+    }
+
+    @Nested
+    @DisplayName("포인트 내역 조회")
+    class PointHistoryTest {
+
+        @DisplayName("사용자의 포인트 내역 조회 성공")
+        @Test
+        void success() {
+            // given
+            long userId = 1L;
+            PointCommand.Balance command = PointCommand.Balance.of(userId);
+
+            PointHistory chargeHistory = PointHistory.builder()
+                    .pointHistoryId(10L)
+                    .userId(userId)
+                    .type(PointHistory.PointTransactionType.CHARGE)
+                    .pointAmount(1000L)
+                    .build();
+
+            PointHistory usetHistory = PointHistory.builder()
+                    .pointHistoryId(10L)
+                    .userId(userId)
+                    .type(PointHistory.PointTransactionType.USE)
+                    .pointAmount(20_000L)
+                    .build();
+
+            List<PointHistory> pointHistories = List.of(chargeHistory, usetHistory);
+
+            when(pointHistoryRepository.findPointHistoryByUserId(userId)).thenReturn(pointHistories);
+
+            // when
+            List<PointInfo.History> pointInfo = pointService.getUserPointHistories(command);
+
+            // then
+            assertThat(pointInfo).hasSize(2);
+            verify(pointHistoryRepository, times(1)).findPointHistoryByUserId(userId);
+
+            PointInfo.History charge = pointInfo.get(0);
+            assertThat(charge).isNotNull();
+            assertThat(charge.getPointHistoryId()).isEqualTo(10L);
+            assertThat(charge.getUserId()).isEqualTo(userId);
+            assertThat(charge.getType()).isEqualTo(PointHistory.PointTransactionType.CHARGE);
+            assertThat(charge.getPointAmount()).isEqualTo(1000L);
+
+            PointInfo.History use = pointInfo.get(1);
+            assertThat(use).isNotNull();
+            assertThat(use.getPointHistoryId()).isEqualTo(10L);
+            assertThat(use.getUserId()).isEqualTo(userId);
+            assertThat(use.getType()).isEqualTo(PointHistory.PointTransactionType.USE);
+            assertThat(use.getPointAmount()).isEqualTo(20_000L);
         }
     }
 

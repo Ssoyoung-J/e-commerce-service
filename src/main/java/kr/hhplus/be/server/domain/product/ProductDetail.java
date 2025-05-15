@@ -2,56 +2,41 @@ package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.BaseEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Optional;
 
-@Entity
-@NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class ProductDetail extends BaseEntity {
 
+    /**
+     *  상품 옵션 ID
+     * */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_detail_id", nullable = false)
     private Long productDetailId;
 
+    /**
+     *  상품 ID
+     * */
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    /**
+     *  상품 옵션명
+     * */
+    @Column(name = "option_name", nullable = false)
     private String optionName;
 
+    /**
+     *  상품 가격
+     * */
+    @Column(name = "product_price", nullable = false)
     private Long productPrice;
-
-    private Long stockQuantity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
-    @Builder
-    public ProductDetail(Long productDetailId, String  optionName, Long productPrice, Long stockQuantity, Product product) {
-        this.productDetailId = productDetailId;
-        this.optionName = optionName;
-        this.productPrice = productPrice;
-        this.stockQuantity = stockQuantity;
-        this.product = product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    // 재고 확인
-    public boolean hasSufficientStock(Long quantity) {
-        if(this.stockQuantity < quantity) {
-            throw new IllegalArgumentException("해당 상품 재고가 부족합니다.");
-        }
-        return this.stockQuantity >= quantity;
-    }
-
-   // 재고 차감
-   public void decreaseStock(Long quantity) {
-        this.stockQuantity -= quantity;
-   }
-
 
 }
