@@ -61,8 +61,8 @@ public class ProductCommand {
         private long productDetailId;
         private int quantity;
 
-        public static ProductInfo.ProductOptionStock of(long productDetailId, int quantity) {
-            return ProductInfo.ProductOptionStock.builder()
+        public static ProductOptionStock of(long productDetailId, int quantity) {
+            return ProductOptionStock.builder()
                     .productDetailId(productDetailId)
                     .quantity(quantity)
                     .build();

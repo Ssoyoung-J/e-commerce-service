@@ -54,6 +54,18 @@ public class CouponService {
                 .toList();
     }
 
+    // 사용자 쿠폰 Id 목록에 해당 쿠폰 정보들 조회
+    @Transactional(readOnly = true)
+    public List<CouponInfo.UserOwnedCoupon> findUserCouponsById(CouponCommand.FindUserCoupons command) {
+        List<Long> userCouponIds = command.getUserCouponIds();
+
+        List<CouponQuery.UserOwnedCoupon> projections = couponRepository.findUserCouponsByIds(userCouponIds);
+
+        return projections.stream()
+                .map(CouponQuery.UserOwnedCoupon::to)
+                .toList();
+    }
+
     // 사용자 쿠폰 사용
     @Transactional
     public void use(CouponCommand.CouponAction command) {

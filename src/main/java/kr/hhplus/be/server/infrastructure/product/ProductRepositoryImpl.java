@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.infrastructure.product;
 
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.product.*;
@@ -24,6 +23,8 @@ import static kr.hhplus.be.server.domain.product.QStock.stock;
 public class ProductRepositoryImpl implements ProductRepository {
 
     private final ProductJpaRepository productJpaRepository;
+    private final ProductDetailJpaRepository productDetailJpaRepository;
+    private final StockJpaRepository stockJpaRepository;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -40,6 +41,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findAll() {
         return productJpaRepository.findAll();
+    }
+
+    @Override
+    public List<Stock> saveStocks(List<Stock> stocks) {
+        return stockJpaRepository.saveAll(stocks);
+    }
+
+    @Override
+    public List<ProductDetail> saveProductDetails(List<ProductDetail> productDetails) {
+        return productDetailJpaRepository.saveAll(productDetails);
     }
 
     @Override
@@ -94,5 +105,10 @@ public class ProductRepositoryImpl implements ProductRepository {
                 .orderBy(salesCount.desc())
                 .limit(limit)
                 .fetch();
+    }
+
+    @Override
+    public List<Stock> findByProductOptionIdInWithLock(List<Long> optionIds) {
+        return stockJpaRepository.findByProductOptionIdInWithLock(optionIds);
     }
 }

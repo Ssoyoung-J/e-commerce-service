@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,26 +31,23 @@ public class OrderCommand {
     }
 
     @Getter
+    @Builder
     public static class OrderItem {
-        private final Long productId;
-        private final Long productDetailId;
+        private final long productDetailId;
         private final int productQuantity;
-        private final Long productPrice;
+        private final long productPrice;
+        @Nullable
+        private Long userCouponId;
+        @Nullable
+        private Long discount;
 
-        @Builder
-        private OrderItem(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
-            this.productId = productId;
-            this.productDetailId = productDetailId;
-            this.productQuantity = productQuantity;
-            this.productPrice = productPrice;
-        }
-
-        public static OrderItem of(Long productId, Long productDetailId, int productQuantity, Long productPrice) {
+        public static OrderItem of(long productDetailId, int productQuantity, long productPrice, Long userCouponId, Long discount) {
             return OrderItem.builder()
-                    .productId(productId)
                     .productDetailId(productDetailId)
                     .productQuantity(productQuantity)
                     .productPrice(productPrice)
+                    .userCouponId(userCouponId)
+                    .discount(discount)
                     .build();
         }
     }
