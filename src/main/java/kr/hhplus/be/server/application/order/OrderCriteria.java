@@ -1,17 +1,18 @@
-//package kr.hhplus.be.server.application.order;
-//
-//import kr.hhplus.be.server.domain.order.OrderCommand;
-//import kr.hhplus.be.server.domain.product.ProductCommand;
+package kr.hhplus.be.server.application.order;
+
+import jakarta.annotation.Nullable;
+import kr.hhplus.be.server.domain.order.OrderCommand;
+import kr.hhplus.be.server.domain.product.ProductCommand;
 //import kr.hhplus.be.server.presentation.order.OrderRequest;
-//import lombok.AccessLevel;
-//import lombok.Builder;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//
-//import java.util.List;
-//
-//@NoArgsConstructor(access = AccessLevel.PRIVATE)
-//public class OrderCriteria {
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class OrderCriteria {
 //    @Getter
 //    public static class Create {
 //        private final Long userId;
@@ -82,6 +83,25 @@
 //            return new OrderItem(productId, productDetailId, productQuantity, productPrice);
 //        }
 //    }
-//
-//
-//}
+
+    @Getter
+    @Builder
+    public static class OrderDetail {
+        private long userId;
+        private List<OrderItem> orderItems;
+
+        public List<Long> toProductDetailIds() {
+            return this.orderItems.stream().map(OrderItem::getProductDetailId).sorted().toList();
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class OrderItem {
+        private long productDetailId;
+        private int quantity;
+        @Nullable
+        private Long userCouponId;
+    }
+
+}
