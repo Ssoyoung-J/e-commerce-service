@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.BaseEntity;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,23 +45,23 @@ public class User extends BaseEntity {
      * 사용자 보유 쿠폰 목록
      * */
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserCoupon> userCoupons = new ArrayList<>();
+//    private List<UserCoupon> userCoupons = new ArrayList<>();
 
-    @Builder
-    public User(String name, String email, String phoneNum, List<UserCoupon> userCoupons) {
-        this.name = name;
-        this.email = email;
-        this.phoneNum = phoneNum;
-        this.userCoupons = userCoupons != null ? userCoupons : new ArrayList<>();
+//    @Builder
+//    public User(String name, String email, String phoneNum, List<UserCoupon> userCoupons) {
+//        this.name = name;
+//        this.email = email;
+//        this.phoneNum = phoneNum;
+//        this.userCoupons = userCoupons != null ? userCoupons : new ArrayList<>();
+//
+//        // 연관관계 설정
+////        for(UserCoupon coupon : this.userCoupons) {
+////            coupon.assignUser(this);
+////        }
+//    }
 
-        // 연관관계 설정
-//        for(UserCoupon coupon : this.userCoupons) {
-//            coupon.assignUser(this);
-//        }
-    }
-
-    public void assignUserCoupon(UserCoupon userCoupon) {
-        this.userCoupons.add(userCoupon);
-    }
+//    public void assignUserCoupon(UserCoupon userCoupon) {
+//        this.userCoupons.add(userCoupon);
+//    }
 
 }

@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.product;
 
 
+import org.springframework.data.repository.query.Param;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,6 +17,8 @@ public interface ProductRepository {
     // 상품 전체 정보 조회
     List<Product> findAll();
 
+    List<Stock> saveStocks(List<Stock> stocks);
+
     // 상품 옵션 목록 조회 - productId
     List<ProductQuery.ProductOptionDetail> findProductDetailsByProductId(long productId);
 
@@ -24,4 +28,7 @@ public interface ProductRepository {
     // 인기 상품 조회
     List<ProductQuery.BestSelling> findBestSellingProducts(LocalDate days, long limit);
 
+    List<Stock> findByProductOptionIdInWithLock(List<Long> optionIds);
+
+    List<ProductDetail> saveProductDetails(List<ProductDetail> product);
 }

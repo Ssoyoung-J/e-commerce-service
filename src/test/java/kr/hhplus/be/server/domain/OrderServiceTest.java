@@ -40,7 +40,7 @@ class OrderServiceTest {
             OrderCommand.Create command = OrderCommand.Create.of(
                     userId,
                     List.of(
-                            OrderCommand.OrderItem.of(1L, 1L, 20, 2000L)
+                            OrderCommand.OrderItem.of(1L, 1, 20L, 2000L, 3000L)
                     )
             );
 

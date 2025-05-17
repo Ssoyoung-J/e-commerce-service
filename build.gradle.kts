@@ -57,6 +57,9 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testImplementation("com.redis:testcontainers-redis:2.2.2")
+
+	// Fixture Monkey
+	testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.1.11")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	// Redisson

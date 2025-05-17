@@ -17,6 +17,7 @@ import static java.lang.Long.sum;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "orders")
 public class Order extends BaseEntity {
 
     /**
@@ -54,8 +55,8 @@ public class Order extends BaseEntity {
     /**
      * 주문 항목 목록
      * */
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItemList = new ArrayList<>();
+//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<OrderItem> orderItemList = new ArrayList<>();
 
     /**
      * 주문 일시
@@ -118,13 +119,13 @@ public class Order extends BaseEntity {
         this.status = newOrderStatus;
     }
 
-    public List<OrderItem> getOrderItemList() {
-        return orderItemList;
-    }
+//    public List<OrderItem> getOrderItemList() {
+//        return orderItemList;
+//    }
 
-    public static Long calculateTotalAmount(List<OrderItem> items) {
-        return items.stream()
-                .mapToLong(OrderItem::calculateAmount)
-                .sum();
-    }
+//    public static Long calculateTotalAmount(List<OrderItem> items) {
+//        return items.stream()
+//                .mapToLong(OrderItem::calculateAmount)
+//                .sum();
+//    }
 }

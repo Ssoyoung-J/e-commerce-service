@@ -4,26 +4,27 @@ package kr.hhplus.be.server.domain.order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ExternalPlatform externalPlatform;
+//    private final ExternalPlatform externalPlatform;
 
     // 주문 생성
     @Transactional
     public OrderInfo.OrderDetails createOrder(OrderCommand.Create command) {
         // 주문 상품들
-        List<OrderItem> items = command.getOrderItems().stream()
-                .map(this::createOrderItem).toList();
+        List<OrderCommand.OrderItem> items = command.getOrderItems();
 
         // 총 주문 금액
-        long totalAmount = Order.calculateTotalAmount(items);
+        long totalAmount = calculateTotalPrice(items);
         // 주문 생성
         Order order = Order.builder()
                 .userId(command.getUserId())
@@ -54,7 +55,7 @@ public class OrderService {
     public void paidOrder(long orderId) {
         Order order = orderRepository.findOrderById(orderId);
         order.updateOrderStatus(Order.OrderStatus.PAID);
-        externalPlatform.sendOrder(order);
+//        externalPlatform.sendOrder(order);
     }
 
     // 주문 취소
@@ -69,13 +70,15 @@ public class OrderService {
         order.updateOrderStatus(Order.OrderStatus.PAYMENT_WAITING);
     }
 
-    private OrderItem createOrderItem(OrderCommand.OrderItem orderItem) {
-        return OrderItem.of(
-                orderItem.getProductId(),
-                orderItem.getProductDetailId(),
-                orderItem.getProductQuantity(),
-                orderItem.getProductPrice()
-        );
+    public long calculateTotalPrice(List<OrderCommand.OrderItem> items) {
+        if (CollectionUtils.isEmpty(items)) {
+            return 0L;
+        }
+
+        return items.stream()
+                .reduce(0L,
+                        (acc, cur) -> acc + ((cur.getProductPrice() - Objects.requireNonNullElse(cur.getDiscount(), 0L)) * cur.getProductQuantity()),
+                        Long::sum);
     }
 
 }

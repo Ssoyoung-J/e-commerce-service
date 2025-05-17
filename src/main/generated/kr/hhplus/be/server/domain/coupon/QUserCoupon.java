@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.user;
+package kr.hhplus.be.server.domain.coupon;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QUserCoupon extends EntityPathBase<UserCoupon> {
 
-    private static final long serialVersionUID = 1506483895L;
+    private static final long serialVersionUID = 1311004348L;
 
     public static final QUserCoupon userCoupon = new QUserCoupon("userCoupon");
 
@@ -28,16 +28,12 @@ public class QUserCoupon extends EntityPathBase<UserCoupon> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final DateTimePath<java.time.LocalDateTime> issuedAt = createDateTime("issuedAt", java.time.LocalDateTime.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final DateTimePath<java.time.LocalDateTime> usedAt = createDateTime("usedAt", java.time.LocalDateTime.class);
-
     public final NumberPath<Long> userCouponId = createNumber("userCouponId", Long.class);
 
-    public final EnumPath<UserCouponStatus> userCouponStatus = createEnum("userCouponStatus", UserCouponStatus.class);
+    public final EnumPath<UserCoupon.UserCouponStatus> userCouponStatus = createEnum("userCouponStatus", UserCoupon.UserCouponStatus.class);
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 

@@ -10,14 +10,17 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +29,7 @@ public class ProductService {
     private static final String CACHE_NAME = "bestSellingProducts";
 
     private final ProductRepository productRepository;
-    private final ProductDetailRepository productDetailRepository;
+//    private final ProductDetailRepository productDetailRepository;
 
     // 상품 옵션 조회 - 상품 ID
     public ProductInfo.ProductDetail getProductById(long productId) {
@@ -54,6 +57,57 @@ public class ProductService {
                 .map(ProductQuery.PriceOption::to)
                 .toList();
 
+    }
+
+    // 상품 재고 차감
+    @Transactional
+    public ProductInfo.DecreaseStock decreaseStockQuantity(ProductCommand.DecreaseStock command) {
+        List<ProductCommand.ProductOptionStock> optionStocks = command.getOptionStocks();
+
+        if (CollectionUtils.isEmpty(optionStocks)) {
+            throw new BusinessException(400, "상품 옵션 개수가 0입니다.");
+        }
+        
+        // 중복 제거
+        List<Long> optionIds = optionStocks.stream().map(ProductCommand.ProductOptionStock::getProductDetailId)
+                .distinct().toList();
+        
+        List<Stock> stocks = productRepository.findByProductOptionIdInWithLock(optionIds);
+
+        // 각 상품 옵션에 대한 차감 수행
+        for(int i = 0; i < optionIds.size(); i++) {
+            ProductCommand.ProductOptionStock optionStock = optionStocks.get(i);
+            Stock stock = stocks.get(i);
+
+            int requestQuantity = optionStock.getQuantity(); // 주문 요청 수량
+            int currentQuantity = stock.getQuantity(); // 현재 수량
+
+            if(currentQuantity < requestQuantity) {
+                throw new BusinessException(400, "현재 상품 수량을 초과하였습니다.");
+            }
+
+            // 재고 차감
+            stock.decreaseStock(requestQuantity);
+
+            List<ProductInfo.ProductOptionStock> results = stocks.stream()
+                    .map(ProductInfo.ProductOptionStock::from)
+                    .toList();
+
+            return ProductInfo.DecreaseStock.builder()
+                    .optionStocks(results)
+                    .build();
+        }
+
+        // 변경된 재고 수량 차감
+        productRepository.saveStocks(stocks);
+
+        List<ProductInfo.ProductOptionStock> results = stocks.stream()
+                .map(ProductInfo.ProductOptionStock::from)
+                .toList();
+
+        return ProductInfo.DecreaseStock.builder()
+                .optionStocks(results)
+                .build();
     }
 
     // 재고 확인
