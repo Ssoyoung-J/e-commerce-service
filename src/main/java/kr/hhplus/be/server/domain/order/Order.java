@@ -53,12 +53,6 @@ public class Order extends BaseEntity {
     }
 
     /**
-     * 주문 항목 목록
-     * */
-//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<OrderItem> orderItemList = new ArrayList<>();
-
-    /**
      * 주문 일시
      * */
     @Column(name = "orderedAt", nullable = false)
@@ -81,36 +75,6 @@ public class Order extends BaseEntity {
      * */
     @Column(name = "final_price", nullable = false)
     private Long finalPrice;
-
-
-//    @Builder
-//    public Order(Long orderId, Long userId, OrderStatus status, List<OrderItem> orderItemList, LocalDateTime orderedAt, Long totalAmount, Long discountAmount) {
-//        this.orderId = orderId;
-//        this.userId = userId;
-//        this.status = status;
-//        this.orderItemList = orderItemList != null ? orderItemList : new ArrayList<>();
-//        this.orderedAt = orderedAt;
-//        this.totalAmount = totalAmount;
-//        this.discountAmount = discountAmount;
-//        this.finalPrice = totalAmount - discountAmount;
-//
-//    }
-
-    // 주문 정보 생성 - createOrder
-//    public static Order create(Long userId ,List<OrderItem> items) {
-//        long totalAmount = items.stream()
-//                .mapToLong(OrderItem::calculateAmount)
-//                .sum();
-//
-//        return Order.builder()
-//                .userId(userId)
-//                .status(OrderStatus.PAYMENT_WAITING)
-//                .orderItemList(items)
-//                .orderedAt(LocalDateTime.now())
-//                .totalAmount(totalAmount)
-//                .discountAmount(0L)
-//                .build();
-//    }
     
 /*   주문 상태 변경 - updateOrderStatus
      주문 상태 변경을 하는 행위에 대해서는 주문 도메인이 알고 있어야 할 것이고,
@@ -119,13 +83,4 @@ public class Order extends BaseEntity {
         this.status = newOrderStatus;
     }
 
-//    public List<OrderItem> getOrderItemList() {
-//        return orderItemList;
-//    }
-
-//    public static Long calculateTotalAmount(List<OrderItem> items) {
-//        return items.stream()
-//                .mapToLong(OrderItem::calculateAmount)
-//                .sum();
-//    }
 }

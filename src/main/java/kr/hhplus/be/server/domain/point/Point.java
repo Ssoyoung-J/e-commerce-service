@@ -17,13 +17,13 @@ public class Point extends BaseEntity {
      * */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pointId", nullable = false)
+    @Column(name = "point_id", nullable = false)
     private Long pointId;
     
     /**
      * 사용자 고유 ID
      * */
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     /**

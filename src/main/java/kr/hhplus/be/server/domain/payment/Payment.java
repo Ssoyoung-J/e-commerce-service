@@ -20,22 +20,18 @@ public class Payment extends BaseEntity {
     private Long paymentId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "paymentStatus", nullable = false)
+    @Column(name = "payment_status", nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Column(name = "paymentPrice", nullable = false)
+    @Column(name = "payment_price", nullable = false)
     private Long paymentPrice;
 
-    @Column(name = "paidAt", nullable = false)
+    @Column(name = "paid_at", nullable = false)
     private LocalDateTime paidAt;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @Column(name = "order_id", nullable = false)
     private Long orderId;
 
-//    public void assignOrder(Order order) {
-//        this.order = order;
-//    }
 
     @Builder
     public Payment(Long paymentId, Long orderId, PaymentStatus paymentStatus, Long paymentPrice, LocalDateTime paidAt) {
