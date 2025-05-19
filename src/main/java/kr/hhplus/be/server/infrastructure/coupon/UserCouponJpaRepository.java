@@ -17,12 +17,12 @@ public interface UserCouponJpaRepository extends JpaRepository<UserCoupon, Long>
     boolean existsByUserIdAndCouponId(Long userId, Long couponId);
 
     @Query("""
-            SELECT us
+            SELECT uc
                 FROM UserCoupon uc
                 JOIN Coupon c
                     ON uc.couponId = c.couponId
                 WHERE c.expiredAt < :standardDateTime
-                    AND uc.userCouponStatus = NOTUSED
+                    AND uc.userCouponStatus = 'NOTUSED'
             """)
     List<UserCoupon> findExpiredUserCoupons(@Param("standardDateTime")LocalDateTime standardDateTime);
 }
