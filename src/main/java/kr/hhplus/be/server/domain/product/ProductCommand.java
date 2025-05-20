@@ -17,7 +17,7 @@ public class ProductCommand {
     public static class ProductDetailIds {
         private List<Long> productDetailIds;
 
-        private static ProductDetailIds of(List<Long> productDetailIds) {
+        public static ProductDetailIds of(List<Long> productDetailIds) {
             return ProductDetailIds.builder()
                     .productDetailIds(productDetailIds)
                     .build();}
@@ -61,8 +61,8 @@ public class ProductCommand {
         private long productDetailId;
         private int quantity;
 
-        public static ProductInfo.ProductOptionStock of(long productDetailId, int quantity) {
-            return ProductInfo.ProductOptionStock.builder()
+        public static ProductOptionStock of(long productDetailId, int quantity) {
+            return ProductOptionStock.builder()
                     .productDetailId(productDetailId)
                     .quantity(quantity)
                     .build();

@@ -18,19 +18,19 @@ public class PointHistory extends BaseEntity {
      * */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pointHistoryId", nullable = false)
+    @Column(name = "point_history_id", nullable = false)
     private Long pointHistoryId;
 
     /**
      * 사용자 고유 ID
      * */
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     /**
      * 포인트 타입(충전/사용)
      * */
-    @Column(name="transactionType", nullable = false)
+    @Column(name="transaction_type", nullable = false)
     private PointTransactionType type;
 
     public enum PointTransactionType {
@@ -40,7 +40,7 @@ public class PointHistory extends BaseEntity {
     /**
      * 포인트
      * */
-    @Column(name="pointAmount", nullable = false)
+    @Column(name="point_amount", nullable = false)
     private Long pointAmount;
 
 
